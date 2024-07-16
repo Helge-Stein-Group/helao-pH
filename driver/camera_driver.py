@@ -31,7 +31,6 @@ class camera():
             print("Cannot open camera")
             exit()
         ret, frame = cap.read()
-        print("image_taken")
         #time_stamp = time.strftime("%Y_%m_%d_%Hh_%Mm_%Ss", time.localtime())
         dir_name = os.path.join(IMAGE_DIR, str(composition_1_qua)+"_"+str(composition_2_qua)+"_"+str(composition_3_qua)+".jpg")
         if not os.path.exists(IMAGE_DIR):
