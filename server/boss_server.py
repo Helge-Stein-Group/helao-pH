@@ -49,8 +49,8 @@ lastly, we have the return dictionary, which should record all inputs and output
 """
 @app.get("/bossDriver/acquire_point")
 def acquire_point(data_path:str):  
-    x,y = b.acquire_point(data_path)
-    retc = return_class(parameters={'data_path':data_path}, data={'x':x,'y':y})
+    x,y,z = b.acquire_point(data_path)
+    retc = return_class(parameters={'data_path':data_path}, data={'x':x,'y':y,'z':z})
     return retc
 
 
