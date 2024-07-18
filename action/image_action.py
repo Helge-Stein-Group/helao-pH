@@ -40,7 +40,7 @@ below the def statement is the body of the function, which communicates with one
 lastly, we have the return dictionary, which should record all inputs and outputs to the function and lower-level functions 
 """
 
-@app.get("/image/extract_color_from_roi")
+@app.get("/image/extractColorFromRoi")
 def extract_color_from_roi(image_path):
     print(image_path)
     average_color = requests.get(f"{imageurl}/imageDriver/extract_color_from_roi",params={'image_path':image_path}).json()
