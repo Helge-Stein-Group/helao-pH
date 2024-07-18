@@ -29,5 +29,5 @@ def psd_test(action, params):
 #psd_test('pumpVial', params=dict(volume = 500, speed = 20, times= 1)) 
 # if V > 0, then aspirate from mix vial to syringe and dispense to the cell, if V < 0, then from cell to syringe and back to mix vial
 
-psd_test('pumpRead', params=dict())
+#psd_test('pumpRead', params=dict())
 # position of the syringe
