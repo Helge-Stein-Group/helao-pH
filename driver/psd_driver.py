@@ -5,7 +5,7 @@ import asyncio
 import pyHamiltonPSD as PSD
 helao_root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(os.path.join(helao_root, 'config'))
-from sdc_cyan import config
+from camera_and_take_image_config import config
 import time
 
 class HamiltonPSD:
