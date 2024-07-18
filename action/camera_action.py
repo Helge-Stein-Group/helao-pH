@@ -37,7 +37,7 @@ below are two example action functions. these have several features
 below the def statement is the body of the function, which communicates with one or more driver servers via requests.get
 lastly, we have the return dictionary, which should record all inputs and outputs to the function and lower-level functions 
 """
-@app.get("/camera/take_image")
+@app.get("/camera/takeImage")
 def take_image(composition_1:str, composition_2:str, composition_3:str, composition_1_qua:int, composition_2_qua:int, composition_3_qua:int):
     print(composition_1)
     dir_name = requests.get(f"{cameraurl}/cameraDriver/take_image",

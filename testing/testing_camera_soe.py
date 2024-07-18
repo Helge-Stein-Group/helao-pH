@@ -21,31 +21,10 @@ def test_fnc(sequence,thread=0):
     requests.post("http://{}:{}/{}/{}".format(
         config['servers']['orchestrator']['host'], 13380, server, action), params=params).json()
 
-def take_image(action, params):
-    server = 'camera'
-    action = action
-    params = params
-    res = requests.get("http://{}:{}/{}/{}".format(
-        config['servers']['camera']['host'], 
-        config['servers']['camera']['port'],server , action),
-        params= params).json()
-    return res
 
-def image_analysis(action, params):
-    server = 'image'
-    action = action
-    params = params['data']['directory']
-    print(params)
-    res = requests.get("http://{}:{}/{}/{}".format(
-        config['servers']['image']['host'], 
-        config['servers']['image']['port'],server , action),
-        params={'image_path':params}).json()
-    res = res['data']['average_color']
-    return res
+params_exp={'start': {'collectionkey' : 'camera_test_soe'}, 'takeImage_0': dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 150, composition_2_qua = 100, composition_3_qua = 100),
+        'extractColorFromRoi_0':{'image_path':r'C:\Users\Fec\Documents\1_1_1_titration_image'}}
 
-params_exp={'start': {'collectionkey' : 'camera_test_soe'}, 'take_image': dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 150, composition_2_qua = 100, composition_3_qua = 100),
-        'extract_color_from_roi':{'image_path':r'C:\Users\Fec\Documents\1_1_1_titration_image'}}
-
-test_fnc(dict(soe=['orchestrator/start','camera/take_image','image/extract_color_from_roi'], params=params_exp, meta=dict()))
+test_fnc(dict(soe=['orchestrator/start','camera/takeImage_0','image/extractColorFromRoi_0'], params=params_exp, meta=dict()))
 
 test_fnc(dict(soe=['orchestrator/finish'], params={'finish': None}, meta={}))
