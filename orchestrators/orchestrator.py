@@ -172,7 +172,7 @@ async def doMeasurement(experiment: dict, thread: int):
 
         #look at this with Fuzhan. objectives are firstly to make this code simpler, more readable, and more generalized (easy) 
         # and secondly to make the scripting needed to properly use it easier (hard)
-        elif servertype == 'analysis':
+        elif servertype == 'analysis' or servertype == 'image':
             add = list(filter(lambda s: s.split('_')[-1] == 'address',params.keys()))
             if add != []: #be sure to use these parameter names "foo_address" in action if (and only if?) you are loading from ongoing sessions. must be string hdf5 paths
                 t = int(params[add[0]].split('/')[0].split(':')[1]) #assuming all addresses come from same file

@@ -23,7 +23,7 @@ def test_fnc(sequence,thread=0):
 
 
 params_exp={'start': {'collectionkey' : 'camera_test_soe'}, 'takeImage_0': dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 150, composition_2_qua = 100, composition_3_qua = 100),
-        'extractColorFromRoi_0':{'image_path':r'C:\Users\Fec\Documents\1_1_1_titration_image'}}
+        'extractColorFromRoi_0':{'image_path':'experiment_0:0/takeImage_0/data/mean'}}
 
 test_fnc(dict(soe=['orchestrator/start','camera/takeImage_0','image/extractColorFromRoi_0'], params=params_exp, meta=dict()))
 

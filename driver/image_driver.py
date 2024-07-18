@@ -14,9 +14,10 @@ class image_process():
         self.height = conf['height']
         
 
-    def extract_color_from_roi(self,image_path:str):
-        print (image_path)
-        image = cv.imread(image_path)
+    def extract_color_from_roi(self,image:list):
+        #print (image_path)
+        #image = cv.imread(image_path)
+        image = np.array(image)
         image = cv.cvtColor(image, cv.COLOR_BGR2HSV)  # Convert to HSV
 
         x = self.x
