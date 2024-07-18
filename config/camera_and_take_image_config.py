@@ -18,7 +18,7 @@ config['imageDriver'] = dict(x = 50, y = 50, width = 200, height = 150)
 config['image'] = dict(url="http://127.0.0.1:13387")
 
 #path determines the directory under which h5 data files will be saved
-config['orchestrator'] = dict(path=r'C:\Users\Operator\Documents\data',kadiurl=None)
+config['orchestrator'] = dict(path=r'C:\Users\DigiCat\Documents\data',kadiurl=None)
 
 #
 config['launch'] = dict(server = ['psdDriver','cameraDriver','imageDriver'],
