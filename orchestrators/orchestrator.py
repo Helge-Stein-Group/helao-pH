@@ -140,7 +140,7 @@ async def doMeasurement(experiment: dict, thread: int):
             serverlocks[server] = asyncio.Lock()
 
         #"if servertype != 'orchestrator':" is a placeholder for the appropriate conditional. need to decide how or whether we will label different types of servers
-        if servertype not in ['orchestrator','ml']: #server is normal
+        if servertype not in ['orchestrator','ml', 'image']: #server is normal
             while True:
                 inp = ' '
                 async with serverlocks[server]:
