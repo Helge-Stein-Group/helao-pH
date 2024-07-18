@@ -140,7 +140,7 @@ async def doMeasurement(experiment: dict, thread: int):
             serverlocks[server] = asyncio.Lock()
 
         #"if servertype != 'orchestrator':" is a placeholder for the appropriate conditional. need to decide how or whether we will label different types of servers
-        if servertype not in ['orchestrator','ml', 'image']: #server is normal
+        if servertype not in ['orchestrator','ml','image']: #server is normal
             while True:
                 inp = ' '
                 async with serverlocks[server]:
@@ -172,7 +172,7 @@ async def doMeasurement(experiment: dict, thread: int):
 
         #look at this with Fuzhan. objectives are firstly to make this code simpler, more readable, and more generalized (easy) 
         # and secondly to make the scripting needed to properly use it easier (hard)
-        elif servertype == 'analysis' or servertype == 'image':
+        elif servertype == 'analysis':
             add = list(filter(lambda s: s.split('_')[-1] == 'address',params.keys()))
             if add != []: #be sure to use these parameter names "foo_address" in action if (and only if?) you are loading from ongoing sessions. must be string hdf5 paths
                 t = int(params[add[0]].split('/')[0].split(':')[1]) #assuming all addresses come from same file
@@ -184,6 +184,31 @@ async def doMeasurement(experiment: dict, thread: int):
                         async with filelocks[h['path']]:
                             if paths_in_hdf5(h['path'],[params[a] for a in add]):
                                 await loop.run_in_executor(None,lambda x: requests.get(x,params=dict(path=h['path'],run=h['run'],addresses=json.dumps({a:params[a] for a in add}))),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/receiveData")
+                                break
+            async with serverlocks[server]:
+                res = await loop.run_in_executor(None,lambda x: requests.get(x,params=params).json(),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/{action}")
+
+        ### this worked for corrected version of helao
+        elif servertype == 'image':
+            if "address" in params.keys():
+            #add = list(filter(lambda s: s.split('_')[-1] == 'address',params.keys()))
+            #if add != []: #be sure to use these parameter names "foo_address" in action if (and only if?) you are loading from ongoing sessions. must be string hdf5 paths
+                #t = int(params[add[0]].split('/')[0].split(':')[1]) #assuming all addresses come from same file
+                t = int(params['address'].split('/')[0].split(':')[1])
+                if tracking[t]['path'] != None:
+                    #async with filelocks[tracking[t]['path']]:
+                    async with serverlocks[server]:
+                        async with filelocks[tracking[t]['path']]:
+                            await loop.run_in_executor(None,lambda x: requests.get(x,params=dict(path=tracking[t]['path'],run=tracking[t]['run'],address=params['address'])),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/receiveData")
+                            #await loop.run_in_executor(None,lambda x: requests.get(x,params=dict(path=tracking[t]['path'],run=tracking[t]['run'],addresses=json.dumps({a:params[a] for a in add}))),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/receiveData")
+                else:
+                    for h in tracking[thread]['history']:
+                        async with filelocks[h['path']]:
+                            async with serverlocks[server]:
+                                #if paths_in_hdf5(h['path'],[params[a] for a in add]):
+                                if paths_in_hdf5(h['path'],params['address']):
+                                    await loop.run_in_executor(None,lambda x: requests.get(x,params=dict(path=h['path'],run=h['run'],address=params['address'])),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/receiveData")
+                                    #await loop.run_in_executor(None,lambda x: requests.get(x,params=dict(path=h['path'],run=h['run'],addresses=json.dumps({a:params[a] for a in add}))),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/receiveData")
                                 break
             async with serverlocks[server]:
                 res = await loop.run_in_executor(None,lambda x: requests.get(x,params=params).json(),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/{action}")
