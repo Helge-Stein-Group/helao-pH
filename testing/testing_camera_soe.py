@@ -31,6 +31,7 @@ def psd_test(action, params):
         params= params).json()
     return res
 
+<<<<<<< HEAD
 def take_image(action, params):
     server = 'camera'
     action = action
@@ -40,6 +41,10 @@ def take_image(action, params):
         config['servers']['camera']['port'],server , action),
         params= params).json()
     return res
+=======
+params_exp={'start': {'collectionkey' : 'camera_test_soe'}, 'takeImage_0': dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 150, composition_2_qua = 100, composition_3_qua = 100),
+        'extractColorFromRoi_0':{'image_path':'experiment_0:0/takeImage_0/data/mean'}}
+>>>>>>> 437f98e2fcc878d05013ddf9842fa8a45be47f15
 
 def image_analysis(action, params):
     server = 'image'
