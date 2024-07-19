@@ -48,6 +48,7 @@ def memory():
 @app.get("/image/receiveData")
 def receiveData(path:str,run:int,addresses:str):
     addresses = json.loads(addresses)
+    print('adresses:',addresses)
     global data
     with h5py.File(path,'r') as h5file:
         for address in addresses.values():
@@ -61,10 +62,12 @@ def receiveData(path:str,run:int,addresses:str):
 @app.get("/image/extractColorFromRoi")
 def extract_color_from_roi(image_path):
     #print(image_path)
-    print(data)
+    #print(data)
     image = data[image_path]
     average_color = requests.get(f"{imageurl}/imageDriver/extract_color_from_roi",params={'image':image}).json()
+    #retc = return_class(parameters={'image_path':image_path}, data={'average_color':average_color})
     retc = return_class(parameters={'image_path':image_path}, data={'average_color':average_color['data']['Average Color']})
+    
     return retc
 
 if __name__ == "__main__":
