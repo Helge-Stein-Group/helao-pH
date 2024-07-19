@@ -38,4 +38,6 @@ class camera():
         cv.imwrite(dir_name, frame)
         print(f"Image has been saved: {dir_name}")
         cap.release()
-        return dir_name
+        #print(frame)
+        #print(frame.tolist())
+        return frame.tolist()
