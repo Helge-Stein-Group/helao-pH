@@ -10,6 +10,7 @@ import os
 from importlib import import_module
 import time
 import cv2 as cv
+import numpy as np
 
 """
 importation of the config file
@@ -40,10 +41,11 @@ lastly, we have the return dictionary, which should record all inputs and output
 @app.get("/camera/takeImage")
 def take_image(composition_1:str, composition_2:str, composition_3:str, composition_1_qua:int, composition_2_qua:int, composition_3_qua:int):
     print(composition_1)
-    dir_name = requests.get(f"{cameraurl}/cameraDriver/take_image",
+    image = requests.get(f"{cameraurl}/cameraDriver/take_image",
                             params={'composition_1':composition_1, 'composition_2':composition_2, 'composition_3':composition_3, 
                                     'composition_1_qua':composition_1_qua, 'composition_2_qua':composition_2_qua, 'composition_3_qua':composition_3_qua}).json()
-    retc = return_class(parameters={'composition_1_quantity':composition_1_qua, 'composition_2_quantity':composition_2_qua, 'composition_3_quantity':composition_3_qua}, data={'directory':dir_name})
+    retc = return_class(parameters={'composition_1_quantity':composition_1_qua, 'composition_2_quantity':composition_2_qua, 'composition_3_quantity':composition_3_qua}, data={'image':image, 'mean':np.mean(image)})
+    #print(image)
     return retc
 
 
