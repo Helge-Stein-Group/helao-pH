@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from importlib import import_module
 import cv2 as cv
 import numpy as np
+import h5py
 import matplotlib.pyplot as plt
 import h5py#
 
