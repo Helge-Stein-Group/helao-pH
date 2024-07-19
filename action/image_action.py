@@ -12,6 +12,8 @@ from importlib import import_module
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+import h5py#
+
 
 """
 importation of the config file
@@ -48,7 +50,7 @@ def memory():
 @app.get("/image/receiveData")
 def receiveData(path:str,run:int,addresses:str):
     addresses = json.loads(addresses)
-    print('adresses:',addresses)
+    #print('adresses:',addresses)
     global data
     with h5py.File(path,'r') as h5file:
         for address in addresses.values():
@@ -60,17 +62,30 @@ def receiveData(path:str,run:int,addresses:str):
         
 
 @app.get("/image/extractColorFromRoi")
-def extract_color_from_roi(image_path):
+def extractColorFromRoi(image_address:str, crop):
     #print(image_path)
-    #print(data)
-    image = data[image_path]
-    average_color = requests.get(f"{imageurl}/imageDriver/extractColorFromRoi",params={'image':image}).json()
+    
+    print('############################################# HELLO ##################################')
+    image = data[image_address]
+    image = np.array(image)
+    print(type(image))
+    print(image.shape, image.dtype)
+    image = cv.cvtColor(image.astype('uint8'), cv.COLOR_BGR2HSV)  # Convert to HSV
+    crop = json.loads(crop)
+    x = crop['x']
+    y = crop['y']
+    width = crop['width']
+    height = crop['height']
+    # Extract the ROI
+
+    roi_image = image[int(y):int(y)+int(height),int(x):int(x)+int(width)]
+    print('roi_image', roi_image)
+    # Calculate the average color in the ROI
+    average_color = np.mean(roi_image, axis=(0, 1))[0]
 
     print('average_color', average_color)
 
-    print('image',image)
-    #retc = return_class(parameters={'image_path':image_path}, data={'average_color':average_color})
-    retc = return_class(parameters={'image_path':image_path}, data={'average_color':average_color['data']['Average Color']})
+    retc = return_class(parameters={'image_address':image_address, 'crop':crop}, data={'average_color':average_color})
     
     return retc
 
@@ -78,5 +93,5 @@ if __name__ == "__main__":
     """
     run app
     """
-    imageurl = config[serverkey]['url']
+    #imageurl = config[serverkey]['url']
     uvicorn.run(app,host=config['servers'][serverkey]['host'],port=config['servers'][serverkey]['port'])
