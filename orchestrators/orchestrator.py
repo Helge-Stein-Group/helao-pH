@@ -136,7 +136,8 @@ async def doMeasurement(experiment: dict, thread: int):
         action = fnc.split('_')[0]
         params = experiment['params'][fnc]
         servertype = server.split(':')[0]
-        print('servertype: "',servertype+'"')
+        
+        
         if server not in serverlocks.keys() and servertype != "orchestrator":
             serverlocks[server] = asyncio.Lock()
 

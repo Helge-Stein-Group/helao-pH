@@ -65,7 +65,11 @@ def extract_color_from_roi(image_path):
     #print(image_path)
     #print(data)
     image = data[image_path]
-    average_color = requests.get(f"{imageurl}/imageDriver/extract_color_from_roi",params={'image':image}).json()
+    average_color = requests.get(f"{imageurl}/imageDriver/extractColorFromRoi",params={'image':image}).json()
+
+    print('average_color', average_color)
+
+    print('image',image)
     #retc = return_class(parameters={'image_path':image_path}, data={'average_color':average_color})
     retc = return_class(parameters={'image_path':image_path}, data={'average_color':average_color['data']['Average Color']})
     

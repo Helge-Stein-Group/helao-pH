@@ -48,7 +48,7 @@ below are two example action functions. these have several features
 below the def statement is the body of the function, which communicates with one or more driver servers via requests.get
 lastly, we have the return dictionary, which should record all inputs and outputs to the function and lower-level functions 
 """
-@app.get("/imageDriver/extract_color_from_roi")
+@app.get("/imageDriver/extractColorFromRoi")
 def extract_color_from_roi(image_path): 
     average_color = c.extract_color_from_roi(image_path)
     retc = return_class(parameters={'image':image_path}, data={'Average Color':average_color})
