@@ -21,11 +21,6 @@ def test_fnc(sequence,thread=0):
     requests.post("http://{}:{}/{}/{}".format(
         config['servers']['orchestrator']['host'], 13380, server, action), params=params).json()
 
-crop = {'x':50, 'y':50, 'width':200, 'height':150}
-
-params_exp={'start': {'collectionkey' : 'camera_test_soe'}, 'takeImage_0': dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 150, composition_2_qua = 100, composition_3_qua = 100),
-        'extractColorFromRoi_0':{'image_address':'experiment_0:0/takeImage_0/data/image', 'crop':json.dumps(crop)}}
-
 
 def image_analysis(action, params):
     server = 'image'
@@ -65,9 +60,13 @@ test_fnc(dict(soe=['orchestrator/start'], params = {'start': {'collectionkey' : 
     #test_fnc(dict(soe=['psd/pumpMix_{i}','camera/takeImage_{i}','image/extractColorFromRoi_{i}'], params=params_exp, meta=dict()))
 
 
+crop = {'x':50, 'y':50, 'width':200, 'height':150}
+
+
 for i in range(len(comp_1)):
     params_exp={'pumpMix_{i}': dict(V1 = comp_1[i], V2 = comp_2[i], V3 = comp_3[i], V4 = 0, V5 = 0, V6 = 0, speed = 10, mix = 1, times= 1, cell = False),
-            'takeImage_{i}': dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = comp_1[i], composition_2_qua = comp_2[i], composition_3_qua = comp_3[i])}
-    test_fnc(dict(soe=['psd/pumpMix_{i}','camera/takeImage_{i}'], params=params_exp, meta=dict()))
+            'takeImage_{i}': dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = comp_1[i], composition_2_qua = comp_2[i], composition_3_qua = comp_3[i]),
+            'extractColorFromRoi_{i}':{'image_address':'experiment_{i}:0/takeImage_{i}/data/image', 'crop':json.dumps(crop)}}
+    test_fnc(dict(soe=['psd/pumpMix_{i}','camera/takeImage_{i}','extractColorFromRoi_{i}'], params=params_exp, meta=dict()))
 
 test_fnc(dict(soe=['orchestrator/finish'], params={'finish': None}, meta={}))
