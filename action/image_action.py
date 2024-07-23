@@ -51,13 +51,17 @@ def memory():
 @app.get("/image/receiveData")
 def receiveData(path:str,run:int,addresses:str):
     addresses = json.loads(addresses)
+    print("yes we can")
     #print('adresses:',addresses)
     global data
+    print ("after global data")
     with h5py.File(path,'r') as h5file:
         for address in addresses.values():
             item = h5file[f'run_{run}/'+address]
+            print ("h5file[f'run_/'+address]")
             if isinstance(item,h5py._hl.group.Group):
                 data.update({address:hdf5_group_to_dict(h5file,f'run_{run}/'+address+'/')})
+                print ("hdf5_group_to_dict")
             elif isinstance(item,h5py._hl.dataset.Dataset):
                 data.update({address:item[()]})
         

@@ -27,6 +27,7 @@ class camera():
         cap.set(cv.CAP_PROP_FRAME_HEIGHT, self.height)
         cap.set(cv.CAP_PROP_AUTO_EXPOSURE, manual_exp)  # Manual exposure
         cap.set(cv.CAP_PROP_EXPOSURE, self.exposure)  # Adjust exposure value
+        time.sleep(3.0)
         if cap.isOpened():
             ret, frame = cap.read() # Try to get the first frame
         else:

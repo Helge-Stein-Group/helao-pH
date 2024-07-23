@@ -11,7 +11,7 @@ sys.path.append(r'../action')
 sys.path.append(r'../server')
 import time
 #from config.mischbares_small import config
-from camera_and_take_image_config import config
+from config.pHopt_config import config
 
 
 def call_orchestrator (sequence,thread=0):
@@ -44,14 +44,28 @@ def image_analysis(action, params):
     res = res['data']['average_color']
     return res
 
-#taking an image
-call_orchestrator(dict(soe=['orchestrator/start','camera/take_image', 'image/extract_color_from_roi'],
-                       params={'start': {'collectionkey' : 'al_sequential'},
-                               'take_image':{'composition_1': "ethanoic_acid", 'composition_2':"phosphoric_acid", 'composition_3':"sodium_hydroxide", "composition_1_qua":150, "composition_2_qua":100, "composition_3_qua":100},
-                               'extract_color_from_roi':{'image_path':image_path}}))
-#image_path = take_image('take_image', params=dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 150, composition_2_qua = 100, composition_3_qua = 100))
+
+#image_path = take_image('takeImage', params=dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 100, composition_2_qua = 100, composition_3_qua = 100))
 #print (image_path)
-#average_col = image_analysis('extract_color_from_roi', params=dict(image_path))
-#print (average_col)
+image_path = "C:/Users/DigiCat/Documents/ethanoic_acid_phosphoric_acid_sodium_hydroxide_titration_image/100_100_100.jpg"
+image = cv.imread(image_path)
+image_hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)  # Convert to HSV
+
+x=322
+y=375
+width = 20
+height = 40
+roi_image = image[int(y):int(y)+int(height),int(x):int(x)+int(width)]
+roi_image_hsv = image_hsv[int(y):int(y)+int(height),int(x):int(x)+int(width)]
+cv.imshow('ROI', roi_image)
+cv.waitKey(0)
+cv.destroyAllWindows()
+#roi_image = [row[int(x):int(x)+int(width)] for row in image[int(y):int(y)+int(height)]]
+
+        # Calculate the average color in the ROI
+average_color_hsv = np.mean(roi_image_hsv, axis=(0, 1))[0]
+average_color = np.mean(roi_image, axis=(0, 1))[0]
+#average_col = image_analysis('extractColorFromRoi', params=dict(image_path))
+print(average_color_hsv)
 
                     
