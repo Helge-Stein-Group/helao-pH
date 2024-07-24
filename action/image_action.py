@@ -87,13 +87,17 @@ def extractColorFromRoi(image_address:str, crop):
     roi_image_hsv = image_hsv[int(y):int(y)+int(height),int(x):int(x)+int(width)]
     #print('roi_image', roi_image)
     # Calculate the average color in the ROI
-    average_color = np.mean(roi_image_hsv, axis=(0, 1))[0]
-    color_roi_std = np.std(roi_image_hsv, axis=(0, 1))[0]
+    average_color_bgr = np.mean(roi_image_bgr, axis=(0,1))
+    color_roi_std_bgr = np.std(roi_image_bgr, axis=(0,1))
+    average_color_hue = np.mean(roi_image_hsv, axis=(0, 1))[0]
+    color_roi_std_hue = np.std(roi_image_hsv, axis=(0, 1))[0]
 
-    print('average_color', average_color)
+    print('average_color', average_color_hue)
 
     retc = return_class(parameters={'image_address':image_address, 'crop':crop}, 
-                        data={'bgr_in_roi':roi_image_bgr,'hsv_in_roi':roi_image_hsv,'average_color':average_color, 'standard_deviation':color_roi_std})
+                        data={'bgr_in_roi':roi_image_bgr,'hsv_in_roi':roi_image_hsv,
+                              'average_color_bgr':average_color_bgr, 'standard_deviation_bgr':color_roi_std_bgr,
+                              'average_color_hue':average_color_hue, 'standard_deviation_hue':color_roi_std_hue})
     
     return retc
 
