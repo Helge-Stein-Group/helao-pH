@@ -83,7 +83,7 @@ def extractColorFromRoi(image_address:str, crop):
     height = crop['height']
     # Extract the ROI
 
-    roi_image_bgr = image
+    roi_image_bgr = image[int(y):int(y)+int(height),int(x):int(x)+int(width)]
     roi_image_hsv = image_hsv[int(y):int(y)+int(height),int(x):int(x)+int(width)]
     #print('roi_image', roi_image)
     # Calculate the average color in the ROI
