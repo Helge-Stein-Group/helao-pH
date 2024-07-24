@@ -75,7 +75,7 @@ def extractColorFromRoi(image_address:str, crop):
     image = np.array(image)
     print(type(image))
     print(image.shape, image.dtype)
-    image = cv.cvtColor(image.astype('uint8'), cv.COLOR_BGR2HSV)  # Convert to HSV
+    image_hsv = cv.cvtColor(image.astype('uint8'), cv.COLOR_BGR2HSV)  # Convert to HSV
     crop = json.loads(crop)
     x = crop['x']
     y = crop['y']
@@ -83,15 +83,17 @@ def extractColorFromRoi(image_address:str, crop):
     height = crop['height']
     # Extract the ROI
 
-    roi_image = image[int(y):int(y)+int(height),int(x):int(x)+int(width)]
+    roi_image_bgr = image
+    roi_image_hsv = image_hsv[int(y):int(y)+int(height),int(x):int(x)+int(width)]
     #print('roi_image', roi_image)
     # Calculate the average color in the ROI
-    average_color = np.mean(roi_image, axis=(0, 1))[0]
-    color_roi_std = np.std(roi_image, axis=(0, 1))[0]
+    average_color = np.mean(roi_image_hsv, axis=(0, 1))[0]
+    color_roi_std = np.std(roi_image_hsv, axis=(0, 1))[0]
 
     print('average_color', average_color)
 
-    retc = return_class(parameters={'image_address':image_address, 'crop':crop}, data={'average_color':average_color, 'standard_deviation':color_roi_std})
+    retc = return_class(parameters={'image_address':image_address, 'crop':crop}, 
+                        data={'bgr_in_roi':roi_image_bgr,'hsv_in_roi':roi_image_hsv,'average_color':average_color, 'standard_deviation':color_roi_std})
     
     return retc
 
