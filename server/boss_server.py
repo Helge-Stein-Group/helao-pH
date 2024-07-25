@@ -7,7 +7,7 @@ from fastapi import FastAPI
 import os
 from importlib import import_module
 from pydantic import BaseModel
-
+import json
 
 """
 importation of the config file
@@ -48,9 +48,10 @@ below the def statement is the body of the function, which communicates with one
 lastly, we have the return dictionary, which should record all inputs and outputs to the function and lower-level functions 
 """
 @app.get("/bossDriver/acquire_point")
-def acquire_point(data_path:str):  
-    x,y,z = b.acquire_point(data_path)
-    retc = return_class(parameters={'data_path':data_path}, data={'x':x,'y':y,'z':z})
+def acquire_point(X:str,y:str):
+
+    x,y,z = b.acquire_point(json.loads(X),json.loads(y))
+    retc = return_class(parameters={}, data={'x':x,'y':y,'z':z})
     return retc
 
 

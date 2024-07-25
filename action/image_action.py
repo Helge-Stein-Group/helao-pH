@@ -64,7 +64,20 @@ def receiveData(path:str,run:int,addresses:str):
                 print ("hdf5_group_to_dict")
             elif isinstance(item,h5py._hl.dataset.Dataset):
                 data.update({address:item[()]})
-        
+
+
+@app.get("/image/prepareData")
+def optimizer_bridge(x_address:str,y_address:str,z_address:str,response_address:str):
+
+    print(data)
+
+    x = float(data[x_address])
+    y = float(data[y_address])
+    z = float(data[z_address])
+    resp = float(data[response_address])
+    retc = return_class(parameters={'x_address':x_address,'y_address':y_address,'z_address':z_address,'response_address':response_address},data={'x':{'x':x,'y':y,'z':z},'y':{'response':resp}})
+    return retc
+
 
 @app.get("/image/extractColorFromRoi")
 def extractColorFromRoi(image_address:str, crop):
