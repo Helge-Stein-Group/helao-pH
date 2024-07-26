@@ -20,12 +20,12 @@ sys.path.append(helao_root)
 config = import_module(sys.argv[1]).config
 serverkey = sys.argv[2]
 
-from boss_driver import BOSS
+from pyfrad_driver import pyfrad
 """
 defines fastapi app
 """
-app = FastAPI(title="boss server", 
-    description="This is the boss server", 
+app = FastAPI(title="pyfrad server", 
+    description="This is the pyfrad server", 
     version="1.0")
 
 
@@ -47,7 +47,7 @@ below are two example action functions. these have several features
 below the def statement is the body of the function, which communicates with one or more driver servers via requests.get
 lastly, we have the return dictionary, which should record all inputs and outputs to the function and lower-level functions 
 """
-@app.get("/bossDriver/acquire_point")
+@app.get("/pyfradDriver/acquire_point")
 def acquire_point(X:str,y:str):
 
     x,y,z = b.acquire_point(json.loads(X),json.loads(y))
@@ -59,6 +59,6 @@ if __name__ == "__main__":
     """
     run app
     """
-    b = BOSS(config[serverkey])
+    b = pyfrad(config[serverkey])
     uvicorn.run(app,host=config['servers'][serverkey]['host'],port=config['servers'][serverkey]['port'])
 

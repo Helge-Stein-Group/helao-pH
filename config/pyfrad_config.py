@@ -2,10 +2,10 @@ config = dict()
 
 #urls of all servers
 config['servers'] = dict(orchestrator = dict(host="127.0.0.1",port=13380),
-                         bossDriver = dict(host="127.0.0.1",port=13385),
+                         pyfradDriver = dict(host="127.0.0.1",port=13385),
                          cameraDriver = dict(host="127.0.0.1",port=13389),
                          camera = dict(host="127.0.0.1",port=13386),
-                         boss = dict(host="127.0.0.1",port=13383),
+                         pyfrad = dict(host="127.0.0.1",port=13383),
                          image = dict(host="127.0.0.1",port=13388),)
 
 #config information for action and driver servers
@@ -19,8 +19,8 @@ xyz = np.hstack([xy,z])
 xyz = xyz[np.where(z>=0)[0],:]
 xyz = np.array(xyz*Total_vol , dtype=int)
 
-config['bossDriver'] = dict(limits=[[0,1],[0,1],[0,1]], candidate_grid = xyz)
-config['boss'] = dict(url="http://127.0.0.1:13385")
+config['pyfradDriver'] = dict(limits=[[0,1],[0,1],[0,1]], candidate_grid = xyz)
+config['pyfrad'] = dict(url="http://127.0.0.1:13385")
 config['camera'] = dict(url="http://127.0.0.1:13389")
 config['cameraDriver'] = dict(port=1, width = 640, height = 480, exposure = -1, manual_exp = True)
 
@@ -29,8 +29,8 @@ config['cameraDriver'] = dict(port=1, width = 640, height = 480, exposure = -1, 
 config['orchestrator'] = dict(path=r'C:\Users\Fec\Documents\data',kadiurl=None)
 
 #
-config['launch'] = dict(server = ['bossDriver','cameraDriver'],
-                        action = ['camera','image','boss'],
+config['launch'] = dict(server = ['pyfradDriver','cameraDriver'],
+                        action = ['camera','image','pyfrad'],
                         orchestrator = ['orchestrator'])
 
 config['instrument'] = "template"

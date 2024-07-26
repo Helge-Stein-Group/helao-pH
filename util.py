@@ -209,9 +209,16 @@ def recursively_save_dict_contents_to_group( h5file, path, dic):
 # if path instead leads to a dataset, return that dataset
 def hdf5_group_to_dict(h5file, path):
     dic = {}
+    print('in the util file')
+
+    print('layer 1',h5file, path)
+    print('layer 2',h5file[path])
+
+    
     if isinstance(h5file[path],h5py._hl.group.Group):
         for key in h5file[path].keys():
-            dic.update({key:hdf5_group_to_dict(h5file,os.path.join(path,key))})
+            print('layer 3',os.path.join(path,key).replace("\\","/"))
+            dic.update({key:hdf5_group_to_dict(h5file,os.path.join(path,key).replace("\\","/"))})
     elif isinstance(h5file[path],h5py._hl.dataset.Dataset):
         return h5file[path][()]
     else:

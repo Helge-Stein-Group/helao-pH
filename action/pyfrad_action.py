@@ -27,7 +27,7 @@ from util import hdf5_group_to_dict
 """
 defines fastapi app
 """
-app = FastAPI(title="boss server", 
+app = FastAPI(title="pyfrad server", 
     description="This is a camera action server", 
     version="1.0")
 
@@ -50,7 +50,7 @@ def memory():
     awaitedpoints = {}
 
 
-@app.get("/boss/receiveData")
+@app.get("/pyfrad/receiveData")
 def receiveData(path: str, run: int, address: str, modelid: int = 0):
     global data
 
@@ -100,7 +100,7 @@ def receiveData(path: str, run: int, address: str, modelid: int = 0):
                 data.update({address:item[()]})
     '''
 
-@app.get("/boss/boss")
+@app.get("/pyfrad/pyfrad")
 def acquire_point(address: str, modelid=0):
     global data
     print('#################################### Here in the boss action ###################################')
@@ -117,7 +117,7 @@ def acquire_point(address: str, modelid=0):
     
     print('key_x', key_x, type(key_x))
     print('key_y', key_y, type(key_y))
-    result = requests.get(f"{bossurl}/bossDriver/acquire_point",params={'X':json.dumps(key_x), 'y':json.dumps(key_y)}).json()
+    result = requests.get(f"{bossurl}/pyfradDriver/acquire_point",params={'X':json.dumps(key_x), 'y':json.dumps(key_y)}).json()
     
     print('boss action result:',result)
     retc = dict(parameters={'X':json.dumps(key_x), 'y':json.dumps(key_y)}, data={'next_x':result['data']['x'],'next_y':result['data']['y'],'next_z':result['data']['z']})

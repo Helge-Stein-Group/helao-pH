@@ -64,7 +64,20 @@ def receiveData(path:str,run:int,addresses:str):
                 print ("hdf5_group_to_dict")
             elif isinstance(item,h5py._hl.dataset.Dataset):
                 data.update({address:item[()]})
-        
+
+
+@app.get("/image/prepareData")
+def optimizer_bridge(x_address:str,y_address:str,z_address:str,response_address:str):
+
+    print(data)
+
+    x = float(data[x_address])
+    y = float(data[y_address])
+    z = float(data[z_address])
+    resp = float(data[response_address])
+    retc = return_class(parameters={'x_address':x_address,'y_address':y_address,'z_address':z_address,'response_address':response_address},data={'x':{'x':x,'y':y,'z':z},'y':{'response':resp}})
+    return retc
+
 
 @app.get("/image/extractColorFromRoi")
 def extractColorFromRoi(image_address:str, crop):
@@ -83,10 +96,9 @@ def extractColorFromRoi(image_address:str, crop):
     height = crop['height']
     # Extract the ROI
 
-    roi_image_bgr = image[int(y):int(y)+int(height),int(x):int(x)+int(width)]
-    roi_image_hsv = image_hsv[int(y):int(y)+int(height),int(x):int(x)+int(width)]
-    print('roi_image', roi_image_bgr.tolist())
-    print(type(roi_image_bgr.tolist()))
+    roi_image_bgr = image[int(y):int(y)+int(height),int(x):int(x)+int(width)].tolist()
+    roi_image_hsv = image_hsv[int(y):int(y)+int(height),int(x):int(x)+int(width)].tolist()
+    #print('roi_image', roi_image)
     # Calculate the average color in the ROI
     average_color_bgr = np.mean(roi_image_bgr, axis=(0,1))
     color_roi_std_bgr = np.std(roi_image_bgr, axis=(0,1))

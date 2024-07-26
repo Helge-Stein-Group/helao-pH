@@ -143,7 +143,7 @@ async def doMeasurement(experiment: dict, thread: int):
 
         #"if servertype != 'orchestrator':" is a placeholder for the appropriate conditional. need to decide how or whether we will label different types of servers
         print('servertype:',servertype)
-        if servertype not in ['orchestrator','ml', 'image']: #server is normal
+        if servertype not in ['orchestrator','ml', 'image', 'boss', 'pyfrad']: #server is normal
             while True:
                 inp = ' '
                 async with serverlocks[server]:
@@ -192,7 +192,7 @@ async def doMeasurement(experiment: dict, thread: int):
             async with serverlocks[server]:
                 res = await loop.run_in_executor(None,lambda x: requests.get(x,params=params).json(),f"http://{config['servers'][server]['host']}:{config['servers'][server]['port']}/{servertype}/{action}")
         
-        elif servertype == 'ml':
+        elif servertype == 'ml' or servertype == 'boss' or servertype == 'pyfrad':
             if "address" in params.keys():
                 #be sure to use this parameter name "address" in action if (and only if?) you are loading from ongoing session. must be string hdf5 path
                 t = int(params['address'].split('/')[0].split(':')[1])
