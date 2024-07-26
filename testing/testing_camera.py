@@ -47,7 +47,7 @@ def image_analysis(action, params):
 
 #image_path = take_image('takeImage', params=dict(composition_1 = "ethanoic_acid", composition_2 = "phosphoric_acid", composition_3 = "sodium_hydroxide",composition_1_qua = 100, composition_2_qua = 100, composition_3_qua = 100))
 #print (image_path)
-image_path = "C:/Users/DigiCat/Documents/red_blue_water_inorder_titration_image/0_500_500.jpg"
+image_path = "C:/Users/DigiCat/Documents/red_blue_water_1_titration_image/500_500_0.jpg"
 image = cv.imread(image_path)
 image_hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)  # Convert to HSV
 

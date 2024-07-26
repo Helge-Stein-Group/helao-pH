@@ -79,10 +79,10 @@ crop = {'x':322, 'y':375, 'width':20, 'height':40}
               #'extractColorFromRoi_0':{'image_address':'experiment_0:0/takeImage_0/data/image', 'crop':json.dumps(crop)}}
 #test_fnc(dict(soe=['orchestrator/start','camera/takeImage_0','image/extractColorFromRoi_0'], params=params_exp, meta=dict()))
 
-for i in range(len(comp_10)):
-    params_exp={f'pumpMix_{2*i}': dict(V1 = 0, V2 = 0, V3 = comp_10[i], V4 = 0, V5 = comp_11[i], V6 = comp_12[i], speed = 20, mix = 1, times= 1, cell = False),
-                f'takeImage_{i}': dict(composition_1 = "red", composition_2 = "blue", composition_3 = "water_inorder",composition_1_qua = comp_10[i], composition_2_qua = comp_11[i], composition_3_qua = comp_12[i]),
-                f'pumpVial_{i}':dict(volume = comp_10[i]+comp_11[i]+comp_12[i], speed = 15, times= 1),
+for i in range(len(comp_1)):
+    params_exp={f'pumpMix_{2*i}': dict(V1 = 0, V2 = 0, V3 = comp_1[i], V4 = 0, V5 = comp_2[i], V6 = comp_3[i], speed = 20, mix = 1, times= 1, cell = False),
+                f'takeImage_{i}': dict(composition_1 = "red", composition_2 = "blue", composition_3 = "water_1",composition_1_qua = comp_1[i], composition_2_qua = comp_2[i], composition_3_qua = comp_3[i]),
+                f'pumpVial_{i}':dict(volume = comp_1[i]+comp_2[i]+comp_3[i], speed = 15, times= 1),
                 f'pumpMix_{2*i+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 10, mix = 1, times= 3, cell = True),
                 f'extractColorFromRoi_{i}':{'image_address':f'experiment_{i+1}:0/takeImage_{i}/data/image', 'crop':json.dumps(crop)}}
     #print("work!")
