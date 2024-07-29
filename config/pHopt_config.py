@@ -9,7 +9,9 @@ config['servers'] = dict(orchestrator = dict(host="127.0.0.1",port=13380),
                          imageDriver = dict(host="127.0.0.1",port=13387),
                          image = dict(host="127.0.0.1",port=13388),
                          bossDriver = dict(host="127.0.0.1",port=13389),
-                         boss = dict(host="127.0.0.1",port=13390))
+                         boss = dict(host="127.0.0.1",port=13390),
+                         pyfradDriver = dict(host="127.0.0.1",port=13391),
+                         pyfrad = dict(host="127.0.0.1",port=13392))
 
 #config information for action and driver servers
 import numpy as np
@@ -26,17 +28,19 @@ config['cameraDriver'] = dict(port=1, width = 640, height = 480, exposure = -6, 
 config['camera'] = dict(url="http://127.0.0.1:13385")
 config['imageDriver'] = dict(x = 50, y = 50, width = 200, height = 150)
 config['image'] = dict(url="http://127.0.0.1:13387")
-config['boss'] = dict(limits=[[0,1],[0,1],[0,1]], candidate_grid = xyz)
+config['bossDriver'] = dict(limits=[[0,1],[0,1],[0,1]], candidate_grid = xyz)
 config['boss'] = dict(url="http://127.0.0.1:13389")
+config['pyfradDriver'] = dict(limits=[[0,1],[0,1],[0,1]], candidate_grid = xyz)
+config['pyfrad'] = dict(url="http://127.0.0.1:13391")
+
 
 #path determines the directory under which h5 data files will be saved
 config['orchestrator'] = dict(path=r'C:\Users\DigiCat\Documents\data',kadiurl=None)
 
 #
-config['launch'] = dict(server = ['psdDriver','cameraDriver','imageDriver','bossDriver'],
-                        action = ['psd','camera','image','boss'],
-                        orchestrator = ['orchestrator']
-                        )
+config['launch'] = dict(server = ['psdDriver','cameraDriver','imageDriver','bossDriver','pyfradDriver'],
+                        action = ['psd','camera','image','boss','pyfrad'],
+                        orchestrator = ['orchestrator'])
 
 config['instrument'] = "template"
 
