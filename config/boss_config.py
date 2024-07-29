@@ -26,7 +26,7 @@ config['cameraDriver'] = dict(port=1, width = 640, height = 480, exposure = -1, 
 
 
 #path determines the directory under which h5 data files will be saved
-config['orchestrator'] = dict(path=r'C:\Users\Fec\Documents\data',kadiurl=None)
+config['orchestrator'] = dict(path=r'C:\Users\DigiCat\Documents\data',kadiurl=None)
 
 #
 config['launch'] = dict(server = ['bossDriver','cameraDriver'],

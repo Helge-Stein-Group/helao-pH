@@ -11,7 +11,7 @@ sys.path.append(r'../action')
 sys.path.append(r'../server')
 import time
 #from config.mischbares_small import config
-from pyfrad_config import config
+from config.pyfrad_config import config
 
 def test_fnc(sequence,thread=0):
     server = 'orchestrator'

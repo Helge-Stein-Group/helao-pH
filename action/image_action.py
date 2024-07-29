@@ -111,9 +111,9 @@ def extractColorFromRoi(image_address:str, crop):
     print('hue_std',color_roi_std_hue)
 
     retc = return_class(parameters={'image_address':image_address, 'crop':crop}, 
-                        data={'bgr_in_roi':roi_image_bgr.tolist(),'hsv_in_roi':roi_image_hsv.tolist(),
+                        data={'bgr_in_roi':roi_image_bgr,'hsv_in_roi':roi_image_hsv,
                               'average_color_bgr':average_color_bgr.tolist(), 'standard_deviation_bgr':color_roi_std_bgr.tolist(),
-                              'average_color_hue':average_color_hue, 'standard_deviation_hue':color_roi_std_hue})
+                              'average_color':average_color_hue, 'standard_deviation_hue':color_roi_std_hue})
     
     return retc
 

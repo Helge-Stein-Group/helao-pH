@@ -44,7 +44,9 @@ class camera():
         #print(frame)
         #print(frame.tolist())
         return frame.tolist()
-    
+
+
+
     # def take_image(self, composition_1:str, composition_2:str, composition_3:str, composition_1_qua:int, composition_2_qua:int, composition_3_qua:int):
     #     documents_path = os.path.expanduser('~\Documents')
     #     IMAGE_DIR = os.path.join(documents_path, composition_1+"_"+composition_2+"_"+composition_3+"_"+'titration_image')
