@@ -21,6 +21,7 @@ xy = np.vstack([X.ravel(),Y.ravel()]).T
 z = np.array([1-np.sum(xyi) for xyi in xy]).reshape(-1,1)
 xyz = np.hstack([xy,z])
 xyz = xyz[np.where(z>=0)[0],:]
+xyz = 1000*xyz
 
 config['psdDriver'] = dict(port=4, baud=9600, psd_type = '4', psd_syringe = '1.25m', speed = 10) #PSD.PSDTypes.psd4.value, PSD.SyringeTypes.syringe125mL.value
 config['psd'] = dict(url="http://127.0.0.1:13370", valve = {'S1': 2, 'S2': 3, 'S3': 4, 'S4': 5, 'S5': 6, 'S6': 7, 'Out': 1, 'Mix': 8}, volume = 1250, speed = 10)
@@ -28,9 +29,9 @@ config['cameraDriver'] = dict(port=1, width = 640, height = 480, exposure = -6, 
 config['camera'] = dict(url="http://127.0.0.1:13385")
 config['imageDriver'] = dict(x = 50, y = 50, width = 200, height = 150)
 config['image'] = dict(url="http://127.0.0.1:13387")
-config['bossDriver'] = dict(limits=[[0,1],[0,1],[0,1]], candidate_grid = xyz)
+config['bossDriver'] = dict(limits=[[0,1000],[0,1000],[0,1000]], candidate_grid = xyz)
 config['boss'] = dict(url="http://127.0.0.1:13389")
-config['pyfradDriver'] = dict(limits=[[0,1],[0,1],[0,1]], candidate_grid = xyz)
+config['pyfradDriver'] = dict(limits=[[0,1000],[0,1000],[0,1000]], candidate_grid = xyz)
 config['pyfrad'] = dict(url="http://127.0.0.1:13391")
 
 

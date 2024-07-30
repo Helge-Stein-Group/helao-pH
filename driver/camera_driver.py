@@ -15,8 +15,11 @@ class camera():
         self.manual_exp = conf['manual_exp']
          
 
-    def take_image(self, composition_1:str, composition_2:str, composition_3:str, composition_1_qua:int, composition_2_qua:int, composition_3_qua:int):
+    def take_image(self, composition_1:str, composition_2:str, composition_3:str, composition_1_qua:float, composition_2_qua:float, composition_3_qua:float):
         documents_path = os.path.expanduser('~\Documents')
+        composition_1_qua = round(composition_1_qua)
+        composition_2_qua = round(composition_2_qua)
+        composition_3_qua = round(composition_3_qua)
         IMAGE_DIR = os.path.join(documents_path, composition_1+"_"+composition_2+"_"+composition_3+"_"+'titration_image')
         cap = cv.VideoCapture(self.port,cv.CAP_DSHOW)
         if self.manual_exp==True:

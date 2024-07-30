@@ -39,12 +39,12 @@ below the def statement is the body of the function, which communicates with one
 lastly, we have the return dictionary, which should record all inputs and outputs to the function and lower-level functions 
 """
 @app.get("/camera/takeImage")
-def take_image(composition_1:str, composition_2:str, composition_3:str, composition_1_qua:int, composition_2_qua:int, composition_3_qua:int):
+def take_image(composition_1:str, composition_2:str, composition_3:str, composition_1_qua:float, composition_2_qua:float, composition_3_qua:float):
     print(composition_1)
     image = requests.get(f"{cameraurl}/cameraDriver/take_image",
                             params={'composition_1':composition_1, 'composition_2':composition_2, 'composition_3':composition_3, 
                                     'composition_1_qua':composition_1_qua, 'composition_2_qua':composition_2_qua, 'composition_3_qua':composition_3_qua}).json()
-    retc = return_class(parameters={'composition_1_quantity':composition_1_qua, 'composition_2_quantity':composition_2_qua, 'composition_3_quantity':composition_3_qua}, data={'image':image, 'mean':np.mean(image)})
+    retc = return_class(parameters={'composition_1_quantity':composition_1_qua, 'composition_2_quantity':composition_2_qua, 'composition_3_quantity':composition_3_qua}, data={'image':image})
     #print(image)
     return retc
 

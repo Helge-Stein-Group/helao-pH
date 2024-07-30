@@ -381,6 +381,8 @@ async def modify(experiment: dict,addresses:Union[str,list],pointers:Union[str,l
                     val = session[f'run_{tracking[thread]["run"]}/'+address][()]
                     dict_address_set(pointer, experiment['params'],val)
                     print(f'pointer {pointer} in params for experiment {tracking[mainthread]["experiment"]} in thread {mainthread} set to {val}')
+                    print(val)
+                    print(type(val))
         else:
             for h in tracking[thread]['history']:
                 if h['path'] == tracking[thread]['path']:

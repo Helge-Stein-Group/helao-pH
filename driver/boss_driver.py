@@ -29,7 +29,7 @@ class BOSS():
         
         X_next = bos.acq_manager.acquire(grid = self.grid)
 
-        return [float(X_next[0][0]), float(X_next[0][1]), float(X_next[0][2])]
+        return [round(float(X_next[0][0])), round(float(X_next[0][1])), round(float(X_next[0][2]))]
         
 
     
