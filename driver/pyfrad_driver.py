@@ -23,7 +23,7 @@ class pyfrad():
 
     def acquire_point(self, X, y):
 
-        print('####################### in the boss driver ##################')
+        print('####################### in the pyfrad driver ##################')
         
         print(X)
         print(y)
@@ -41,7 +41,7 @@ class pyfrad():
                               svc_options = svc_opts)
         new_point = pfr.get_next_point(self.grid)
             
-        return [float(new_point[0]), float(new_point[1]), float(new_point[2])]
+        return [round(float(new_point[0])), round(float(new_point[1])), round(float(new_point[2]))]
         
 
     
