@@ -42,7 +42,7 @@ crop = {'x':322, 'y':375, 'width':20, 'height':40}
 for i in range(len(comp_1)):
     j = i+1
     params_exp={f'pumpMix_{2*j}': dict(V1 = 0, V2 = 0, V3 = comp_1[i], V4 = 0, V5 = comp_2[i], V6 = comp_3[i], speed = 20, mix = 1, times= 1, cell = False),
-                f'takeImage_{j}': dict(composition_1 = "red", composition_2 = "blue", composition_3 = "water_pyfrad",composition_1_qua = comp_1[i], composition_2_qua = comp_2[i], composition_3_qua = comp_3[i]),
+                f'takeImage_{j}': dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_pyfrad",composition_1_qua = comp_1[i], composition_2_qua = comp_2[i], composition_3_qua = comp_3[i]),
                 f'pumpVial_{j}':dict(volume = 1100, speed = 15, times= 1),
                 f'pumpMix_{2*j+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 10, mix = 1, times= 3, cell = True),
                 f'extractColorFromRoi_{j}':{'image_address':f'experiment_{j}:0/takeImage_{j}/data/image', 'crop' : json.dumps(crop)},
@@ -59,14 +59,14 @@ test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{2*j}',f'psd/pumpM
                         f'modify_{2*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{2*j}/V3',f'pumpMix_{2*j}/V5',f'pumpMix_{2*j}/V6']},
                         f'pumpMix_{2*j}': dict(V1 = 0, V2 = 0, V3 = '?', V4 = 0, V5 = '?', V6 = '?', speed = 20, mix = 1, times= 1, cell = False),
                         f'modify_{2*j+1}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'takeImage_{j}/composition_1_qua',f'takeImage_{j}/composition_2_qua',f'takeImage_{j}/composition_3_qua']},
-                        f'takeImage_{j}':dict(composition_1 = "red", composition_2 = "blue", composition_3 = "water_pyfrad",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
+                        f'takeImage_{j}':dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_pyfrad",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
                         f'pumpVial_{j}':dict(volume = 1100, speed = 15, times= 1),
                         f'pumpMix_{2*j+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 10, mix = 1, times= 3, cell = True),
                         f'extractColorFromRoi_{j}':{'image_address':f'experiment_{j}:0/takeImage_{j}/data/image', 'crop' : json.dumps(crop)},
                         f'prepareData_{j}':{'x_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_1_quantity','y_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_2_quantity','z_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_3_quantity',
                                             'response_address':f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'}}, meta=dict()))
 
-n = 2
+n = 12
 for i in range(j,j+n):
     j = i+1
     addresses = [f'experiment_{l}:0/prepareData_{l}/data' for l in range(1, j)]
@@ -76,7 +76,7 @@ for i in range(j,j+n):
                         f'modify_{2*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{2*j}/V3',f'pumpMix_{2*j}/V5',f'pumpMix_{2*j}/V6']},
                         f'pumpMix_{2*j}': dict(V1 = 0, V2 = 0, V3 = '?', V4 = 0, V5 = '?', V6 = '?', speed = 20, mix = 1, times= 1, cell = False),
                         f'modify_{2*j+1}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'takeImage_{j}/composition_1_qua',f'takeImage_{j}/composition_2_qua',f'takeImage_{j}/composition_3_qua']},
-                        f'takeImage_{j}':dict(composition_1 = "red", composition_2 = "blue", composition_3 = "water_pyfrad",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
+                        f'takeImage_{j}':dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_pyfrad",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
                         f'pumpVial_{j}':dict(volume = 1100, speed = 15, times= 1),
                         f'pumpMix_{2*j+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 10, mix = 1, times= 3, cell = True),
                         f'extractColorFromRoi_{j}':{'image_address':f'experiment_{j}:0/takeImage_{j}/data/image', 'crop' : json.dumps(crop)},

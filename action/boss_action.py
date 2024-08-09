@@ -12,6 +12,11 @@ import time
 import cv2 as cv
 import json
 import h5py
+from sklearn import svm
+from sklearn.svm import SVC
+import numpy as np
+from sklearn.metrics import f1_score
+from sklearn.mixture import GaussianMixture
 
 """
 importation of the config file
@@ -113,7 +118,7 @@ def acquire_point(address: str, modelid=0):
     y = [da['x']['y'] for da in dat]
     z = [da['x']['z'] for da in dat]
     key_x = [[i, j, k] for i, j, k in zip(x, y, z)]
-    key_y = [da['y']['response'] for da in dat]
+    key_y = [da['z']['response'] for da in dat]
     
     print('key_x', key_x, type(key_x))
     print('key_y', key_y, type(key_y))
@@ -121,6 +126,138 @@ def acquire_point(address: str, modelid=0):
     
     print('boss action result:',result)
     retc = dict(parameters={'X':json.dumps(key_x), 'y':json.dumps(key_y)}, data={'next_x':result['data']['x'],'next_y':result['data']['y'],'next_z':result['data']['z']})
+    return retc
+
+
+
+
+@app.get("/boss/dataAnalysis")
+def data_analysis(address: str, gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,modelid = 0):
+    global data
+    print('#################################### Here in the boss analysis ###################################')
+    print(data)
+    dat = data[modelid][-1]
+
+    
+
+    x = [da['x']['x'] for da in dat]
+    y = [da['x']['y'] for da in dat]
+    z = [da['x']['z'] for da in dat]
+    if int(num_data) == 4:
+        f1_list_iter = []
+    else:
+        f1_list_iter = [da['y']['f1_score'] for da in dat]
+    
+    opt_used_compositions = [[i, j, k] for i, j, k in zip(x, y, z)]
+    opt_average_hue_value = [da['z']['response'] for da in dat]
+
+    opt_used_compositions = opt_used_compositions+[[int(comp1),int(comp2),int(comp3)]]
+    opt_average_hue_value = opt_average_hue_value+[float(avghue)]
+    print('composition and average hue value at this iteration is')
+    print(opt_used_compositions)
+    print(opt_average_hue_value)
+
+
+    grid_average_hue_value = []
+    grid_all_composition = []
+
+    with h5py.File(gridfilepath, 'r') as h5file:
+        for s in range(1,int(totgridpoint)):
+            hue_path = f'run_0/experiment_{s+1}:0/extractColorFromRoi_{s}/data/average_color/'
+            hue_dataset = h5file[hue_path]
+            hue_value = hue_dataset[()]
+            grid_average_hue_value.append(hue_value)
+
+            grid_each_composition = []
+            for j in range(1,7):
+                composition_path = f'run_0/experiment_{s+1}:0/pumpMix_{2*s}/parameters/V{j}/'
+                composition_dataset = h5file[composition_path]
+                composition_value = composition_dataset[()]
+                grid_each_composition.append(composition_value)
+            grid_all_composition.append(grid_each_composition)
+    grid_used_compositions=[]
+    for i in range(len(grid_all_composition)):
+        comp_1=grid_all_composition[i][2]
+        comp_2=grid_all_composition[i][4]
+        comp_3=grid_all_composition[i][5]
+        grid_used_compositions=grid_used_compositions + [[comp_1,comp_2,comp_3]]
+
+
+    # opt_average_hue_value = []
+    # opt_all_composition = []
+    # with h5py.File(path, 'r') as h5file:
+    #     for s in range(1,num_data):
+    #         hue_path = f'run_0/experiment_{s}:0/extractColorFromRoi_{s}/data/average_color/'
+    #         hue_dataset = h5file[hue_path]
+    #         hue_value = hue_dataset[()]
+    #         opt_average_hue_value.append(hue_value)
+
+    #         opt_each_composition = []
+    #         for j in range(1,7):
+    #             composition_path = f'run_0/experiment_{s}:0/pumpMix_{2*s}/parameters/V{j}/'
+    #             composition_dataset = h5file[composition_path]
+    #             composition_value = composition_dataset[()]
+    #             opt_each_composition.append(composition_value)
+    #         opt_all_composition.append(opt_each_composition)
+    # opt_used_compositions=[]
+    # for i in range(len(opt_all_composition)):
+    #     comp_1=opt_all_composition[i][2]
+    #     comp_2=opt_all_composition[i][4]
+    #     comp_3=opt_all_composition[i][5]
+    #     opt_used_compositions=opt_used_compositions + [[comp_1,comp_2,comp_3]]
+    
+    print("Now calculating f1 score at this iteration")
+
+    X = []
+    for i in range(len(grid_average_hue_value)):
+        X = X + [[grid_average_hue_value[i]]]
+    X = np.array(X)
+    gmm = GaussianMixture(n_components=3, random_state=0)
+    gmm.fit(X)
+
+    means = gmm.means_
+    covariances = gmm.covariances_
+    weights = gmm.weights_
+
+    def predict_clusters(data, gmm):
+        return gmm.predict(data)
+    
+    grid_hue_labels = predict_clusters(X, gmm)
+    
+    test = np.array(grid_used_compositions)
+    composition_iter = []
+    
+    prediction = []
+    hue_iter = []
+    for s in range(0,int(num_data)):
+        hue_iter =  hue_iter + [[opt_average_hue_value[s]]]
+    hue_iter = np.array(hue_iter)
+    composition_iter = np.array(opt_used_compositions)
+        #print(hue_iter)
+        #print(composition_iter)
+        #hue_iter_arr = np.array(opt_hue[0:i])
+        #print(hue_iter_arr)
+    opt_hue_labels_iter = predict_clusters(hue_iter, gmm)
+    opt_svc_model = SVC(kernel='linear')
+    opt_svc_model.fit(composition_iter,opt_hue_labels_iter)
+    prediction_at_iter = opt_svc_model.predict(test)
+    f1 = f1_score(grid_hue_labels,prediction_at_iter,average='macro')
+    print(type(f1))
+    f1 = float(f1)
+    print(type(f1))
+    print("f1 score at iteration "+num_data+" is "+str(f1))
+    print("prediction of grid labels at iteration "+num_data+" is "+str(prediction_at_iter))
+    f1_list_iter.append(f1)
+    prediction.append(list(prediction_at_iter))
+
+    print(f1_list_iter)
+    print(type(f1_list_iter))
+    print(prediction)
+    print(type(prediction))
+
+    #retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter,'prediction':prediction})
+    retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter})
+    
     return retc
 
 

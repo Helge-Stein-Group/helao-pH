@@ -51,10 +51,10 @@ def memory():
 @app.get("/image/receiveData")
 def receiveData(path:str,run:int,addresses:str):
     addresses = json.loads(addresses)
-    print("yes we can")
+    #print("yes we can")
     #print('adresses:',addresses)
     global data
-    print ("after global data")
+    #print ("after global data")
     with h5py.File(path,'r') as h5file:
         for address in addresses.values():
             item = h5file[f'run_{run}/'+address]
@@ -65,17 +65,33 @@ def receiveData(path:str,run:int,addresses:str):
             elif isinstance(item,h5py._hl.dataset.Dataset):
                 data.update({address:item[()]})
 
+# @app.get("/image/prepareData1")
+# def optimizer_bridge1(x_address:str,y_address:str,z_address:str,response_address:str):
+
+#     print(data)
+
+#     x = float(data[x_address])
+#     y = float(data[y_address])
+#     z = float(data[z_address])
+#     resp = float(data[response_address])
+#     retc = return_class(parameters={'x_address':x_address,'y_address':y_address,'z_address':z_address,'response_address':response_address},data={'x':{'x':x,'y':y,'z':z},'z':{'response':resp}})
+#     return retc
 
 @app.get("/image/prepareData")
-def optimizer_bridge(x_address:str,y_address:str,z_address:str,response_address:str):
-
+def optimizer_bridge(x_address:str,y_address:str,z_address:str,f1_score:str,response_address:str):
+    print('############################# optimizer bridge / prepare data ##############################')
+    global data
     print(data)
-
     x = float(data[x_address])
     y = float(data[y_address])
-    z = float(data[z_address])
+    z = float(data[z_address]) 
     resp = float(data[response_address])
-    retc = return_class(parameters={'x_address':x_address,'y_address':y_address,'z_address':z_address,'response_address':response_address},data={'x':{'x':x,'y':y,'z':z},'y':{'response':resp}})
+    print(x)
+    if f1_score == 'None':
+        f1 = 0
+    else:
+        f1 = float(data[f1_score])
+    retc = return_class(parameters={'x_address':x_address,'y_address':y_address,'z_address':z_address,'f1_score':f1_score, 'response_address':response_address},data={'x':{'x':x,'y':y,'z':z},'y':{'f1_score':f1},'z':{'response':resp}})
     return retc
 
 

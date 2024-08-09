@@ -72,7 +72,7 @@ def receiveData(path: str, run: int, address: str, modelid: int = 0):
     for add in address:
         with h5py.File(path, 'r') as h5file:
             add = f'run_{run}/'+add+'/'
-            print('#################################### Here in the boss action receiveData ###################################')
+            print('#################################### Here in the pyfrad action receiveData ###################################')
             print(h5file)
             print(add)
             print(hdf5_group_to_dict(h5file, add))
@@ -103,7 +103,7 @@ def receiveData(path: str, run: int, address: str, modelid: int = 0):
 @app.get("/pyfrad/pyfrad")
 def acquire_point(address: str, modelid=0):
     global data
-    print('#################################### Here in the boss action ###################################')
+    print('#################################### Here in the pyfrad action ###################################')
     print(data)
     dat = data[modelid][-1]
 
