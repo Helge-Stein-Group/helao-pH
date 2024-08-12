@@ -78,20 +78,21 @@ def receiveData(path:str,run:int,addresses:str):
 #     return retc
 
 @app.get("/image/prepareData")
-def optimizer_bridge(x_address:str,y_address:str,z_address:str,f1_score:str,response_address:str):
+def optimizer_bridge(x_address:str,y_address:str,z_address:str,f1score_address:str,response_address:str):
     print('############################# optimizer bridge / prepare data ##############################')
     global data
     print(data)
     x = float(data[x_address])
     y = float(data[y_address])
     z = float(data[z_address]) 
-    resp = float(data[response_address])
     print(x)
-    if f1_score == 'None':
+    if f1score_address == 'None':
         f1 = 0
     else:
-        f1 = float(data[f1_score])
-    retc = return_class(parameters={'x_address':x_address,'y_address':y_address,'z_address':z_address,'f1_score':f1_score, 'response_address':response_address},data={'x':{'x':x,'y':y,'z':z},'y':{'f1_score':f1},'z':{'response':resp}})
+        f1 = (data[f1score_address]).tolist()
+    
+    resp = float(data[response_address])
+    retc = return_class(parameters={'x_address':x_address,'y_address':y_address,'z_address':z_address,'f1_score':f1score_address, 'response_address':response_address},data={'x':{'x':x,'y':y,'z':z},'y':{'f1_score':f1},'z':{'response':resp}})
     return retc
 
 
