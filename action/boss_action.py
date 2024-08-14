@@ -132,22 +132,33 @@ def acquire_point(address: str, modelid=0):
 
 
 @app.get("/boss/dataAnalysis")
-def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,modelid = 0):
+def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,numitr,modelid = 0):
     f1_list_iter = []
     if avghue == str(0):
         f1 = 0
+        f1_list_iter.append(f1)
+        retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1})
     else:
         global data
         print('#################################### Here in the boss analysis ###################################')
         print(data)
         dat = data[modelid][-1]
+        dat2 = data[modelid][-1][int(numitr)-2]
 
         x = [da['x']['x'] for da in dat]
         y = [da['x']['y'] for da in dat]
         z = [da['x']['z'] for da in dat]
-        f1_list_array = [da['y']['f1_score'] for da in dat]
+        f1_list_array = [dat2['y']['f1_score']]
+        if int(numitr) >= 5:
+            f1_list_iter2 = f1_list_array[0].tolist()
+        else:
+            f1_list_iter2 = f1_list_array
         
-        f1_list_iter = [arr[0] for arr in f1_list_array]
+        for i in range(len(f1_list_iter2)):
+            f1_list_iter = f1_list_iter + [float(f1_list_iter2[i])]
+
+        print(f1_list_iter)
+        #f1_list_iter = f1_list_array
     
         opt_used_compositions = [[i, j, k] for i, j, k in zip(x, y, z)]
         opt_average_hue_value = [da['z']['response'] for da in dat]
@@ -234,11 +245,14 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,mo
             hue_iter =  hue_iter + [[opt_average_hue_value[s]]]
         hue_iter = np.array(hue_iter)
         composition_iter = np.array(opt_used_compositions)
-        #print(hue_iter)
+        print('hue iter')
+        print(hue_iter)
         #print(composition_iter)
         #hue_iter_arr = np.array(opt_hue[0:i])
         #print(hue_iter_arr)
         opt_hue_labels_iter = predict_clusters(hue_iter, gmm)
+        print('labels')
+        print(opt_hue_labels_iter)
         opt_svc_model = SVC(kernel='linear')
         opt_svc_model.fit(composition_iter,opt_hue_labels_iter)
         prediction_at_iter = opt_svc_model.predict(test)
@@ -249,17 +263,16 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,mo
         print("f1 score at iteration "+num_data+" is "+str(f1))
         print("prediction of grid labels at iteration "+num_data+" is "+str(prediction_at_iter))
         prediction.append(list(prediction_at_iter))
-    
-    f1_list_iter.append(f1)
+        f1_list_iter.append(f1)
     
 
-    print(f1_list_iter)
-    print(type(f1_list_iter))
-    #print(prediction)
-    #print(type(prediction))
+        print(f1_list_iter)
+        print(type(f1_list_iter))
+        #print(prediction)
+        #print(type(prediction))
 
-    #retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter,'prediction':prediction})
-    retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter})
+        #retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter,'prediction':prediction})
+        retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter})
     
     return retc
 
