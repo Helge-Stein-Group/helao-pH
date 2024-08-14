@@ -17,6 +17,7 @@ from sklearn.svm import SVC
 import numpy as np
 from sklearn.metrics import f1_score
 from sklearn.mixture import GaussianMixture
+import matplotlib.pyplot as plt
 
 """
 importation of the config file
@@ -132,7 +133,7 @@ def acquire_point(address: str, modelid=0):
 
 
 @app.get("/boss/dataAnalysis")
-def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,numitr,modelid = 0):
+def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,optimiser,modelid = 0):
     f1_list_iter = []
     if avghue == str(0):
         f1 = 0
@@ -143,13 +144,13 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,nu
         print('#################################### Here in the boss analysis ###################################')
         print(data)
         dat = data[modelid][-1]
-        dat2 = data[modelid][-1][int(numitr)-2]
+        dat2 = data[modelid][-1][int(num_data)-2]
 
         x = [da['x']['x'] for da in dat]
         y = [da['x']['y'] for da in dat]
         z = [da['x']['z'] for da in dat]
         f1_list_array = [dat2['y']['f1_score']]
-        if int(numitr) >= 5:
+        if int(num_data) >= 5:
             f1_list_iter2 = f1_list_array[0].tolist()
         else:
             f1_list_iter2 = f1_list_array
@@ -268,6 +269,31 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,nu
 
         print(f1_list_iter)
         print(type(f1_list_iter))
+
+
+        print('####################### Now plotting the iteration vs f1 score graph ###############################')
+
+        iteration_list = np.linspace(1,int(num_data)-3,int(num_data)-3)
+        f1list_plot = f1_list_iter[1:]
+        plt.plot(iteration_list,f1list_plot,marker='o',color='blue',linestyle='-')
+        plt.xlabel('Number of iterations')
+        plt.ylabel('F1 score')
+        plt.xticks(np.linspace(1,int(num_data)-3,int(num_data)-3))
+        plt.yticks(np.linspace(0.40,1.05,14))
+        plt.axhline(y=0.8, color='gray', linestyle='--', label='F1 score of 0.80')
+        plt.axhline(y=0.9, color='black', linestyle='--', label='F1 score of 0.90')
+
+        print('plot has been constructed')
+
+        documents_path = os.path.expanduser('~\Documents')
+        IMAGE_DIR = os.path.join(documents_path, optimiser+"_"+'f1score_image')
+        dir_name = os.path.join(IMAGE_DIR, f"iteration_{num_data}_.jpg")
+        if not os.path.exists(IMAGE_DIR):
+            os.makedirs(IMAGE_DIR)
+
+        plt.savefig(dir_name, format='jpeg')
+        print(f"f1 score plot has been saved: {dir_name}")
+
         #print(prediction)
         #print(type(prediction))
 
