@@ -18,6 +18,7 @@ import numpy as np
 from sklearn.metrics import f1_score
 from sklearn.mixture import GaussianMixture
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 """
 importation of the config file
@@ -133,7 +134,7 @@ def acquire_point(address: str, modelid=0):
 
 
 @app.get("/boss/dataAnalysis")
-def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,optimiser,modelid = 0):
+def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,composition1_name,composition2_name,composition3_name,avghue,optimiser,modelid = 0):
     f1_list_iter = []
     if avghue == str(0):
         f1 = 0
@@ -219,7 +220,7 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,op
     #     comp_3=opt_all_composition[i][5]
     #     opt_used_compositions=opt_used_compositions + [[comp_1,comp_2,comp_3]]
     
-        print("Now calculating f1 score at this iteration")
+        print("########################## Calculating f1 score at this iteration###################################")
 
         X = []
         for i in range(len(grid_average_hue_value)):
@@ -273,8 +274,19 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,op
 
         print('####################### Now plotting the iteration vs f1 score graph ###############################')
 
+        if 'mpltern' in sys.modules:
+            print('mpltern modlule exsisted')
+            mpltern = sys.modules['mpltern']
+            del sys.modules['mpltern']
+            del mpltern
+            print('mpltern deleted')
+        else:
+            print('mpltern is not here')
+
         iteration_list = np.linspace(1,int(num_data)-3,int(num_data)-3)
         f1list_plot = f1_list_iter[1:]
+        print(iteration_list)
+        print(f1list_plot)
         plt.plot(iteration_list,f1list_plot,marker='o',color='blue',linestyle='-')
         plt.xlabel('Number of iterations')
         plt.ylabel('F1 score')
@@ -286,13 +298,59 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,op
         print('plot has been constructed')
 
         documents_path = os.path.expanduser('~\Documents')
-        IMAGE_DIR = os.path.join(documents_path, optimiser+"_"+'f1score_image')
+        IMAGE_DIR = os.path.join(documents_path, optimiser+"_"+composition1_name+"_"+composition2_name+"_"+composition3_name+"_"+'f1score_image')
         dir_name = os.path.join(IMAGE_DIR, f"iteration_{num_data}_.jpg")
         if not os.path.exists(IMAGE_DIR):
             os.makedirs(IMAGE_DIR)
 
         plt.savefig(dir_name, format='jpeg')
         print(f"f1 score plot has been saved: {dir_name}")
+
+
+        print ("################ Now plotting ternary diagram with prediction at this iteration ####################")
+        import mpltern
+        opt_used_compositions_array = np.array(opt_used_compositions)
+        test
+        str_labels = [str(label) for label in opt_hue_labels_iter]
+        str_labels_pred = [str(label) for label in prediction]
+        rgb_colors = [mcolors.hsv_to_rgb((hue / 180, 1, 1)) for hue in opt_average_hue_value]
+        
+        # Create the ternary diagram
+        fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'projection': 'ternary'})
+
+        # Plot the data points
+        ax.scatter(opt_used_compositions_array[:, 0], opt_used_compositions_array[:, 1], opt_used_compositions_array[:, 2], c=rgb_colors, cmap='viridis')
+        ax.scatter(test[:, 0], test[:, 1], test[:, 2], c='black')
+
+        # Add labels to the points
+        for i, label in enumerate(str_labels):
+            ax.text(opt_used_compositions_array[i, 0], opt_used_compositions_array[i, 1], opt_used_compositions_array[i, 2], label, fontsize=12, color='red')
+
+        for i, label in enumerate(str_labels_pred):
+            ax.text(test[i,0], test[i,1], test[i,2], label, fontsize=12, color = 'black')
+        
+        ax.set_tlabel(composition1_name)
+        ax.set_llabel(composition2_name)
+        ax.set_rlabel(composition3_name)
+        ax.taxis.set_label_rotation_mode('axis')
+        ax.laxis.set_label_rotation_mode('axis')
+        ax.raxis.set_label_rotation_mode('axis')
+
+        print('ternary plot has been constructed')
+
+        documents_path = os.path.expanduser('~\Documents')
+        IMAGE_DIR = os.path.join(documents_path, optimiser+"_"+composition1_name+"_"+composition2_name+"_"+composition3_name+"_"+'ternaryplot_image')
+        dir_name = os.path.join(IMAGE_DIR, f"iteration_{num_data}_.jpg")
+        if not os.path.exists(IMAGE_DIR):
+            os.makedirs(IMAGE_DIR)
+
+        plt.savefig(dir_name, format='jpeg')
+        print(f"Ternary plot has been saved: {dir_name}")
+
+        del sys.modules['mpltern']
+        del mpltern
+
+
 
         #print(prediction)
         #print(type(prediction))
