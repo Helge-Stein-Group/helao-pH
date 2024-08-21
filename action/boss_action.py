@@ -18,6 +18,7 @@ import numpy as np
 from sklearn.metrics import f1_score
 from sklearn.mixture import GaussianMixture
 import matplotlib.pyplot as plt
+import mpltern
 import matplotlib.colors as mcolors
 
 """
@@ -274,26 +275,27 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
 
         print('####################### Now plotting the iteration vs f1 score graph ###############################')
 
-        if 'mpltern' in sys.modules:
-            print('mpltern modlule exsisted')
-            mpltern = sys.modules['mpltern']
-            del sys.modules['mpltern']
-            del mpltern
-            print('mpltern deleted')
-        else:
-            print('mpltern is not here')
+        # if 'mpltern' in sys.modules:
+        #     print('mpltern modlule exsisted')
+        #     mpltern = sys.modules['mpltern']
+        #     del sys.modules['mpltern']
+        #     del mpltern
+        #     print('mpltern deleted')
+        # else:
+        #     print('mpltern is not here')
 
         iteration_list = np.linspace(1,int(num_data)-3,int(num_data)-3)
         f1list_plot = f1_list_iter[1:]
         print(iteration_list)
         print(f1list_plot)
-        plt.plot(iteration_list,f1list_plot,marker='o',color='blue',linestyle='-')
-        plt.xlabel('Number of iterations')
-        plt.ylabel('F1 score')
-        plt.xticks(np.linspace(1,int(num_data)-3,int(num_data)-3))
-        plt.yticks(np.linspace(0.40,1.05,14))
-        plt.axhline(y=0.8, color='gray', linestyle='--', label='F1 score of 0.80')
-        plt.axhline(y=0.9, color='black', linestyle='--', label='F1 score of 0.90')
+
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.plot(iteration_list, f1list_plot, marker = 'o', color = 'blue')
+        ax.axhline(y=0.80, color='gray', linestyle='--')
+        ax.axhline(y=0.90, color='black', linestyle='--')
+        ax.set_xlabel('Number of iterations')
+        ax.set_ylabel('F1 score')
+        ax.set_title('Number of iteration vs. F1 score')
 
         print('plot has been constructed')
 
@@ -303,12 +305,12 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
         if not os.path.exists(IMAGE_DIR):
             os.makedirs(IMAGE_DIR)
 
-        plt.savefig(dir_name, format='jpeg')
+        fig.savefig(dir_name, format='png')
         print(f"f1 score plot has been saved: {dir_name}")
 
 
         print ("################ Now plotting ternary diagram with prediction at this iteration ####################")
-        import mpltern
+        
         opt_used_compositions_array = np.array(opt_used_compositions)
         test
         str_labels = [str(label) for label in opt_hue_labels_iter]
@@ -344,11 +346,11 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
         if not os.path.exists(IMAGE_DIR):
             os.makedirs(IMAGE_DIR)
 
-        plt.savefig(dir_name, format='jpeg')
+        fig.savefig(dir_name, format='png')
         print(f"Ternary plot has been saved: {dir_name}")
 
-        del sys.modules['mpltern']
-        del mpltern
+        plt.clf()
+        plt.close('all')
 
 
 
