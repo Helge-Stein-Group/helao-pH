@@ -35,8 +35,8 @@ comp_2 = xyz[:,1]
 comp_3 = xyz[:,2]
 print(len(comp_1))
 
-grid_file_path = "C:/Users/DigiCat/Documents/data/testing_camera_soe/template_testing_camera_soe_session_9.h5"
-tot_grid_point = 21
+grid_file_path = "C:/Users/DigiCat/Documents/data/testing_camera_soe/template_testing_camera_soe_session_11.h5"
+tot_grid_point = 66
 
 test_fnc(dict(soe=['orchestrator/start'], params={'start': {'collectionkey':'pyfrad_test'}}, meta={}))
 
@@ -46,17 +46,18 @@ crop = {'x':322, 'y':375, 'width':20, 'height':40}
 
 for i in range(len(comp_1)):
     j = i+1
-    params_exp={f'pumpMix_{3*j}': dict(V1 = 0, V2 = 0, V3 = comp_1[i], V4 = 0, V5 = comp_2[i], V6 = comp_3[i], speed = 20, mix = 1, times= 1, cell = False),
-                f'takeImage_{j}': dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_pyfrad",composition_1_qua = comp_1[i], composition_2_qua = comp_2[i], composition_3_qua = comp_3[i]),
+    params_exp={f'pumpMix_{4*j}': dict(V1 = 0, V2 = comp_1[i], V3 = comp_2[i], V4 = 0, V5 = comp_3[i], V6 = 0, speed = 30, mix = 1, times= 1, cell = False),
+                f'pumpMix_{4*j+1}': dict(V1 = 1000, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 13, mix = 3, times= 1, cell = False),
+                f'takeImage_{j}': dict(composition_1 = "H3PO4", composition_2 = "citric", composition_3 = "NaOH_pyfrad",composition_1_qua = comp_1[i], composition_2_qua = comp_2[i], composition_3_qua = comp_3[i]),
                 f'pumpVial_{j}':dict(volume = 1100, speed = 12, times= 1),
-                f'pumpMix_{3*j+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 700, speed = 15, mix = 1, times= 3, cell = True),
-                f'pumpMix_{3*j+2}':dict(V1 = 500, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 15, mix = 1, times= 1, cell = True),
+                f'pumpMix_{4*j+2}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 15, mix = 1, times= 3, cell = True),
+                f'pumpMix_{4*j+3}':dict(V1 = 500, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 15, mix = 1, times= 1, cell = True),
                 f'extractColorFromRoi_{j}':{'image_address':f'experiment_{j}:0/takeImage_{j}/data/image', 'crop' : json.dumps(crop)},f'dataAnalysis_{j}':{'gridfilepath':grid_file_path,'totgridpoint':tot_grid_point,'num_data':j,'comp1':comp_1[i],'comp2':comp_2[i],'comp3':comp_3[i],'avghue':0},
-                f'dataAnalysis_{j}':{'gridfilepath':grid_file_path,'totgridpoint':tot_grid_point,'num_data':j,'comp1':comp_1[i],'comp2':comp_2[i],'comp3':comp_3[i],'avghue':0,'optimiser':'pyfrad'},
+                f'dataAnalysis_{j}':{'gridfilepath':grid_file_path,'totgridpoint':tot_grid_point,'num_data':j,'comp1':comp_1[i],'comp2':comp_2[i],'comp3':comp_3[i],'composition1_name':'blue','composition2_name':'yellow','composition3_name':'water','avghue':0,'optimiser':'pyfrad'},
                 f'prepareData_{j}':{'x_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_1_quantity','y_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_2_quantity','z_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_3_quantity',
                                     'f1score_address':f'experiment_{j}:0/dataAnalysis_{j}/data/f1_score_list',
                                     'response_address':f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'}}
-    test_fnc(dict(soe=[f'psd/pumpMix_{3*j}',f'camera/takeImage_{j}', f'psd/pumpVial_{j}', f'psd/pumpMix_{3*j+1}',f'psd/pumpMix_{3*j+2}',f'image/extractColorFromRoi_{j}', f'pyfrad/dataAnalysis_{j}',f'image/prepareData_{j}'], params=params_exp, meta=dict()))
+    test_fnc(dict(soe=[f'psd/pumpMix_{4*j}',f'psd/pumpMix_{4*j+1}',f'camera/takeImage_{j}', f'psd/pumpVial_{j}', f'psd/pumpMix_{4*j+2}',f'psd/pumpMix_{4*j+3}',f'image/extractColorFromRoi_{j}', f'pyfrad/dataAnalysis_{j}',f'image/prepareData_{j}'], params=params_exp, meta=dict()))
 
 j += 1
 
@@ -64,18 +65,19 @@ addresses = [f'experiment_{i}:0/prepareData_{i}/data' for i in range(1, len(comp
 
 print('after address')
 
-test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpMix_{3*j}',f'orchestrator/modify_{3*j+1}',f'camera/takeImage_{j}', f'psd/pumpVial_{j}', f'psd/pumpMix_{3*j+1}',f'psd/pumpMix_{3*j+2}', f'image/extractColorFromRoi_{j}',f'orchestrator/modify_{3*j+2}',f'pyfrad/dataAnalysis_{j}', f'image/prepareData_{j}'], 
+test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpMix_{4*j}',f'psd/pumpMix_{4*j+1}',f'orchestrator/modify_{3*j+1}',f'camera/takeImage_{j}', f'psd/pumpVial_{j}', f'psd/pumpMix_{4*j+2}',f'psd/pumpMix_{4*j+3}', f'image/extractColorFromRoi_{j}',f'orchestrator/modify_{3*j+2}',f'pyfrad/dataAnalysis_{j}', f'image/prepareData_{j}'], 
                 params={f'pyfrad_{j}':{'address':json.dumps(addresses)},
-                f'modify_{3*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{3*j}/V3',f'pumpMix_{3*j}/V5',f'pumpMix_{3*j}/V6']},
-                f'pumpMix_{3*j}': dict(V1 = 0, V2 = 0, V3 = '?', V4 = 0, V5 = '?', V6 = '?', speed = 20, mix = 1, times= 1, cell = False),
+                f'modify_{3*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{4*j}/V2',f'pumpMix_{4*j}/V3',f'pumpMix_{4*j}/V5']},
+                f'pumpMix_{4*j}': dict(V1 = 0, V2 = '?', V3 = '?', V4 = 0, V5 = '?', V6 = 0, speed = 20, mix = 1, times= 1, cell = False),
+                f'pumpMix_{4*j+1}': dict(V1 = 1000, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 13, mix = 3, times= 1, cell = False),
                 f'modify_{3*j+1}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'takeImage_{j}/composition_1_qua',f'takeImage_{j}/composition_2_qua',f'takeImage_{j}/composition_3_qua']},
                 f'takeImage_{j}':dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_bosstest",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
                 f'pumpVial_{j}':dict(volume = 1100, speed = 12, times= 1),
-                f'pumpMix_{3*j+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 700, speed = 15, mix = 1, times= 3, cell = True),
-                f'pumpMix_{3*j+2}':dict(V1 = 500, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 15, mix = 1, times= 1, cell = True),
+                f'pumpMix_{4*j+2}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 15, mix = 1, times= 3, cell = True),
+                f'pumpMix_{4*j+3}':dict(V1 = 500, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 15, mix = 1, times= 1, cell = True),
                 f'extractColorFromRoi_{j}':{'image_address':f'experiment_{j}:0/takeImage_{j}/data/image', 'crop' : json.dumps(crop)},
                 f'modify_{3*j+2}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z',f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'],'pointers':[f'dataAnalysis_{j}/comp1',f'dataAnalysis_{j}/comp2',f'dataAnalysis_{j}/comp3',f'dataAnalysis_{j}/avghue']},
-                f'dataAnalysis_{j}':{'gridfilepath':grid_file_path,'totgridpoint':tot_grid_point,'num_data':j,'comp1':'?','comp2':'?','comp3':'?','avghue':'?','optimiser':'pyfrad'},
+                f'dataAnalysis_{j}':{'gridfilepath':grid_file_path,'totgridpoint':tot_grid_point,'num_data':j,'comp1':'?','comp2':'?','comp3':'?','composition1_name':'blue','composition2_name':'yellow','composition3_name':'water','avghue':'?','optimiser':'pyfrad'},
                 f'prepareData_{j}':{'x_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_1_quantity','y_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_2_quantity','z_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_3_quantity',
                                     'f1score_address':f'experiment_{j}:0/dataAnalysis_{j}/data/f1_score_list',
                                     'response_address':f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'}}, meta=dict()))
@@ -96,23 +98,24 @@ test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpM
 #                                             'f1score_address':f'experiment_{j}:0/dataAnalysis_{j}/data/f1_score_list',
 #                                             'response_address':f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'}}, meta=dict()))
 
-n = 2
+n = 12
 for i in range(j,j+n):
     j = i+1
     addresses = [f'experiment_{l}:0/prepareData_{l}/data' for l in range(1, j)]
 
-    test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpMix_{3*j}',f'orchestrator/modify_{3*j+1}',f'camera/takeImage_{j}',f'psd/pumpVial_{j}', f'psd/pumpMix_{3*j+1}', f'psd/pumpMix_{3*j+2}', f'image/extractColorFromRoi_{j}', f'orchestrator/modify_{3*j+2}', f'pyfrad/dataAnalysis_{j}', f'image/prepareData_{j}'], 
+    test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpMix_{4*j}',f'psd/pumpMix_{4*j+1}',f'orchestrator/modify_{3*j+1}',f'camera/takeImage_{j}',f'psd/pumpVial_{j}', f'psd/pumpMix_{4*j+2}', f'psd/pumpMix_{4*j+3}', f'image/extractColorFromRoi_{j}', f'orchestrator/modify_{3*j+2}', f'pyfrad/dataAnalysis_{j}', f'image/prepareData_{j}'], 
                 params={f'pyfrad_{j}':{'address':json.dumps(addresses)},
-                        f'modify_{3*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{3*j}/V3',f'pumpMix_{3*j}/V5',f'pumpMix_{3*j}/V6']},
-                        f'pumpMix_{3*j}': dict(V1 = 0, V2 = 0, V3 = '?', V4 = 0, V5 = '?', V6 = '?', speed = 20, mix = 1, times= 1, cell = False),
+                        f'modify_{3*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{4*j}/V2',f'pumpMix_{4*j}/V3',f'pumpMix_{4*j}/V5']},
+                        f'pumpMix_{4*j}': dict(V1 = 0, V2 = '?', V3 = '?', V4 = 0, V5 = '?', V6 = 0, speed = 20, mix = 1, times= 1, cell = False),
+                        f'pumpMix_{4*j+1}': dict(V1 = 1000, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 13, mix = 3, times= 1, cell = False),
                         f'modify_{3*j+1}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'takeImage_{j}/composition_1_qua',f'takeImage_{j}/composition_2_qua',f'takeImage_{j}/composition_3_qua']},
                         f'takeImage_{j}':dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_pyfrad",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
                         f'pumpVial_{j}':dict(volume = 1100, speed = 12, times= 1),
-                        f'pumpMix_{3*j+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 700, speed = 15, mix = 1, times= 3, cell = True),
-                        f'pumpMix_{3*j+2}':dict(V1 = 500, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 15, mix = 1, times= 1, cell = True),
+                        f'pumpMix_{4*j+2}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 15, mix = 1, times= 3, cell = True),
+                        f'pumpMix_{4*j+3}':dict(V1 = 500, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 15, mix = 1, times= 1, cell = True),
                         f'extractColorFromRoi_{j}':{'image_address':f'experiment_{j}:0/takeImage_{j}/data/image', 'crop' : json.dumps(crop)},
                         f'modify_{3*j+2}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z',f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'],'pointers':[f'dataAnalysis_{j}/comp1',f'dataAnalysis_{j}/comp2',f'dataAnalysis_{j}/comp3',f'dataAnalysis_{j}/avghue']},
-                        f'dataAnalysis_{j}':{'gridfilepath':grid_file_path,'totgridpoint':tot_grid_point,'num_data':j,'comp1':'?','comp2':'?','comp3':'?','avghue':'?','optimiser':'pyfrad'},
+                        f'dataAnalysis_{j}':{'gridfilepath':grid_file_path,'totgridpoint':tot_grid_point,'num_data':j,'comp1':'?','comp2':'?','comp3':'?','composition1_name':'blue','composition2_name':'yellow','composition3_name':'water','avghue':'?','optimiser':'pyfrad'},
                         f'prepareData_{j}':{'x_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_1_quantity','y_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_2_quantity','z_address':f'experiment_{j}:0/takeImage_{j}/parameters/composition_3_quantity',
                                             'f1score_address':f'experiment_{j}:0/dataAnalysis_{j}/data/f1_score_list',
                                             'response_address':f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'}}, meta=dict()))

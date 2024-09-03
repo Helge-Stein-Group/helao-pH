@@ -185,16 +185,16 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
 
                 grid_each_composition = []
                 for j in range(1,7):
-                    composition_path = f'run_0/experiment_{s+1}:0/pumpMix_{2*s}/parameters/V{j}/'
+                    composition_path = f'run_0/experiment_{s+1}:0/pumpMix_{4*s}/parameters/V{j}/'
                     composition_dataset = h5file[composition_path]
                     composition_value = composition_dataset[()]
                     grid_each_composition.append(composition_value)
                 grid_all_composition.append(grid_each_composition)
         grid_used_compositions=[]
         for i in range(len(grid_all_composition)):
-            comp_1=grid_all_composition[i][2]
-            comp_2=grid_all_composition[i][4]
-            comp_3=grid_all_composition[i][5]
+            comp_1=grid_all_composition[i][1]
+            comp_2=grid_all_composition[i][2]
+            comp_3=grid_all_composition[i][4]
             grid_used_compositions=grid_used_compositions + [[comp_1,comp_2,comp_3]]
 
 
@@ -259,6 +259,8 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
         opt_svc_model = SVC(kernel='linear')
         opt_svc_model.fit(composition_iter,opt_hue_labels_iter)
         prediction_at_iter = opt_svc_model.predict(test)
+        w = opt_svc_model.coef_
+        b = opt_svc_model.intercept_
         f1 = f1_score(grid_hue_labels,prediction_at_iter,average='macro')
         print(type(f1))
         f1 = float(f1)
@@ -293,6 +295,7 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
         ax.plot(iteration_list, f1list_plot, marker = 'o', color = 'blue')
         ax.axhline(y=0.80, color='gray', linestyle='--')
         ax.axhline(y=0.90, color='black', linestyle='--')
+        ax.set_xticks(range(1, len(iteration_list) + 1))
         ax.set_xlabel('Number of iterations')
         ax.set_ylabel('F1 score')
         ax.set_title('Number of iteration vs. F1 score')
@@ -312,10 +315,22 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
         print ("################ Now plotting ternary diagram with prediction at this iteration ####################")
         
         opt_used_compositions_array = np.array(opt_used_compositions)
-        test
         str_labels = [str(label) for label in opt_hue_labels_iter]
-        str_labels_pred = [str(label) for label in prediction]
+        str_labels_pred = [str(label) for label in prediction_at_iter]
+        print(str_labels_pred)
         rgb_colors = [mcolors.hsv_to_rgb((hue / 180, 1, 1)) for hue in opt_average_hue_value]
+        print('w values is')
+        print(w)
+        print('b values is')
+        print(b)
+        for ki, bi, color in zip(w, b, rgb_colors):
+            x_values = np.linspace(0, 1, 100)
+            y_values = (bi - ki[0]*x_values) / (ki[1] + ki[2])
+            z_values = 1 - x_values - y_values
+            print('x, y, z values are')
+            print(x_values)
+            print(y_values)
+            print(z_values)
         
         # Create the ternary diagram
         fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'projection': 'ternary'})
@@ -323,6 +338,8 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
         # Plot the data points
         ax.scatter(opt_used_compositions_array[:, 0], opt_used_compositions_array[:, 1], opt_used_compositions_array[:, 2], c=rgb_colors, cmap='viridis')
         ax.scatter(test[:, 0], test[:, 1], test[:, 2], c='black')
+        ax.plot(x_values, y_values, z_values, linewidth=2, color='blue', zorder=20)
+
 
         # Add labels to the points
         for i, label in enumerate(str_labels):

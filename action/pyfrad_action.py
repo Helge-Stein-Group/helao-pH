@@ -18,6 +18,8 @@ import numpy as np
 from sklearn.metrics import f1_score
 from sklearn.mixture import GaussianMixture
 import matplotlib.pyplot as plt
+import mpltern
+import matplotlib.colors as mcolors
 
 """
 importation of the config file
@@ -131,7 +133,7 @@ def acquire_point(address: str, modelid=0):
 
 
 @app.get("/pyfrad/dataAnalysis")
-def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,optimiser,modelid = 0):
+def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,composition1_name,composition2_name,composition3_name,avghue,optimiser,modelid = 0):
     f1_list_iter = []
     if avghue == str(0):
         f1 = 0
@@ -139,7 +141,7 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,op
         retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1})
     else:
         global data
-        print('#################################### Here in the boss analysis ###################################')
+        print('#################################### Here in the pyfrad analysis ###################################')
         print(data)
         dat = data[modelid][-1]
         dat2 = data[modelid][-1][int(num_data)-2]
@@ -252,6 +254,8 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,op
         opt_svc_model = SVC(kernel='linear')
         opt_svc_model.fit(composition_iter,opt_hue_labels_iter)
         prediction_at_iter = opt_svc_model.predict(test)
+        w = opt_svc_model.coef_
+        b = opt_svc_model.intercept_
         f1 = f1_score(grid_hue_labels,prediction_at_iter,average='macro')
         print(type(f1))
         f1 = float(f1)
@@ -270,13 +274,15 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,op
 
         iteration_list = np.linspace(1,int(num_data)-3,int(num_data)-3)
         f1list_plot = f1_list_iter[1:]
-        plt.plot(iteration_list,f1list_plot,marker='o',color='blue',linestyle='-')
-        plt.xlabel('Number of iterations')
-        plt.ylabel('F1 score')
-        plt.xticks(np.linspace(1,int(num_data)-3,int(num_data)-3))
-        plt.yticks(np.linspace(0.40,1.05,14))
-        plt.axhline(y=0.8, color='gray', linestyle='--', label='F1 score of 0.80')
-        plt.axhline(y=0.9, color='black', linestyle='--', label='F1 score of 0.90')
+        
+        fig, ax = plt.subplots(figsize=(6, 6))
+        ax.plot(iteration_list, f1list_plot, marker = 'o', color = 'blue')
+        ax.axhline(y=0.80, color='gray', linestyle='--')
+        ax.axhline(y=0.90, color='black', linestyle='--')
+        ax.set_xticks(range(1, len(iteration_list) + 1))
+        ax.set_xlabel('Number of iterations')
+        ax.set_ylabel('F1 score')
+        ax.set_title('Number of iteration vs. F1 score')
 
         print('plot has been constructed')
 
@@ -288,6 +294,64 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,avghue,op
 
         plt.savefig(dir_name, format='jpeg')
         print(f"f1 score plot has been saved: {dir_name}")
+
+
+        print ("################ Now plotting ternary diagram with prediction at this iteration ####################")
+        
+        opt_used_compositions_array = np.array(opt_used_compositions)
+        str_labels = [str(label) for label in opt_hue_labels_iter]
+        str_labels_pred = [str(label) for label in prediction_at_iter]
+        print(str_labels_pred)
+        rgb_colors = [mcolors.hsv_to_rgb((hue / 180, 1, 1)) for hue in opt_average_hue_value]
+        print('w values is')
+        print(w)
+        print('b values is')
+        print(b)
+        for ki, bi, color in zip(w, b, rgb_colors):
+            x_values = np.linspace(0, 1, 100)
+            y_values = (bi - ki[0]*x_values) / (ki[1] + ki[2])
+            z_values = 1 - x_values - y_values
+            print('x, y, z values are')
+            print(x_values)
+            print(y_values)
+            print(z_values)
+        
+        # Create the ternary diagram
+        fig, ax = plt.subplots(figsize=(6, 6), subplot_kw={'projection': 'ternary'})
+
+        # Plot the data points
+        ax.scatter(opt_used_compositions_array[:, 0], opt_used_compositions_array[:, 1], opt_used_compositions_array[:, 2], c=rgb_colors, cmap='viridis')
+        ax.scatter(test[:, 0], test[:, 1], test[:, 2], c='black')
+        ax.plot(x_values, y_values, z_values, linewidth=2, color='blue', zorder=20)
+
+
+        # Add labels to the points
+        for i, label in enumerate(str_labels):
+            ax.text(opt_used_compositions_array[i, 0], opt_used_compositions_array[i, 1], opt_used_compositions_array[i, 2], label, fontsize=12, color='red')
+
+        for i, label in enumerate(str_labels_pred):
+            ax.text(test[i,0], test[i,1], test[i,2], label, fontsize=12, color = 'black')
+        
+        ax.set_tlabel(composition1_name)
+        ax.set_llabel(composition2_name)
+        ax.set_rlabel(composition3_name)
+        ax.taxis.set_label_rotation_mode('axis')
+        ax.laxis.set_label_rotation_mode('axis')
+        ax.raxis.set_label_rotation_mode('axis')
+
+        print('ternary plot has been constructed')
+
+        documents_path = os.path.expanduser('~\Documents')
+        IMAGE_DIR = os.path.join(documents_path, optimiser+"_"+composition1_name+"_"+composition2_name+"_"+composition3_name+"_"+'ternaryplot_image')
+        dir_name = os.path.join(IMAGE_DIR, f"iteration_{num_data}_.jpg")
+        if not os.path.exists(IMAGE_DIR):
+            os.makedirs(IMAGE_DIR)
+
+        fig.savefig(dir_name, format='png')
+        print(f"Ternary plot has been saved: {dir_name}")
+
+        plt.clf()
+        plt.close('all')
 
     #retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter,'prediction':prediction})
         retc = dict(parameters={'Iteration':num_data}, data={'f1_score_list':f1_list_iter})

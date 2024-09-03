@@ -36,7 +36,7 @@ def image_analysis(action, params):
 
 
 Total_vol = 1000
-x = y = np.linspace(0,1,6)
+x = y = np.linspace(0,1,11)
 X,Y = np.meshgrid(x,y)
 xy = np.vstack([X.ravel(),Y.ravel()]).T
 z = np.array([1-np.sum(xyi) for xyi in xy]).reshape(-1,1)
@@ -80,13 +80,15 @@ crop = {'x':322, 'y':375, 'width':20, 'height':40}
 #test_fnc(dict(soe=['orchestrator/start','camera/takeImage_0','image/extractColorFromRoi_0'], params=params_exp, meta=dict()))
 
 for i in range(len(comp_1)):
-    params_exp={f'pumpMix_{2*i}': dict(V1 = 0, V2 = 0, V3 = round(comp_1[i]), V4 = 0, V5 = round(comp_2[i]), V6 = round(comp_3[i]), speed = 20, mix = 1, times= 1, cell = False),
-                f'takeImage_{i}': dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_1",composition_1_qua = round(comp_1[i]), composition_2_qua = round(comp_2[i]), composition_3_qua = round(comp_3[i])),
-                f'pumpVial_{i}':dict(volume = 1100, speed = 15, times= 1),
-                f'pumpMix_{2*i+1}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 10, mix = 1, times= 3, cell = True),
+    params_exp={f'pumpMix_{4*i}': dict(V1 = 0, V2 = round(comp_1[i]), V3 = round(comp_2[i]), V4 = 0, V5 = round(comp_3[i]), V6 = 0, speed = 20, mix = 1, times= 1, cell = False),
+                f'pumpMix_{4*i+1}': dict(V1 = 1000, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 13, mix = 3, times= 1, cell = False),
+                f'takeImage_{i}': dict(composition_1 = "H3PO4", composition_2 = "citric", composition_3 = "NaOH",composition_1_qua = round(comp_1[i]), composition_2_qua = round(comp_2[i]), composition_3_qua = round(comp_3[i])),
+                f'pumpVial_{i}':dict(volume = 1100, speed = 12, times= 1),
+                f'pumpMix_{4*i+2}':dict(V1 = 0, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 1000, speed = 15, mix = 1, times= 3, cell = True),
+                f'pumpMix_{4*i+3}':dict(V1 = 500, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 12, mix = 1, times= 1, cell = True),
                 f'extractColorFromRoi_{i}':{'image_address':f'experiment_{i+1}:0/takeImage_{i}/data/image', 'crop':json.dumps(crop)}}
     #print("work!")
-    test_fnc(dict(soe=[f'psd/pumpMix_{2*i}',f'camera/takeImage_{i}',f'psd/pumpVial_{i}',f'psd/pumpMix_{2*i+1}',f'image/extractColorFromRoi_{i}'], params=params_exp, meta=dict()))
+    test_fnc(dict(soe=[f'psd/pumpMix_{4*i}',f'psd/pumpMix_{4*i+1}',f'camera/takeImage_{i}',f'psd/pumpVial_{i}',f'psd/pumpMix_{4*i+2}',f'psd/pumpMix_{4*i+3}',f'image/extractColorFromRoi_{i}'], params=params_exp, meta=dict()))
 
 
 
