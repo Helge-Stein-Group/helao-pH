@@ -183,16 +183,16 @@ def data_analysis(gridfilepath,totgridpoint,num_data,comp1,comp2,comp3,compositi
 
                 grid_each_composition = []
                 for j in range(1,7):
-                    composition_path = f'run_0/experiment_{s+1}:0/pumpMix_{2*s}/parameters/V{j}/'
+                    composition_path = f'run_0/experiment_{s+1}:0/pumpMix_{4*s}/parameters/V{j}/'
                     composition_dataset = h5file[composition_path]
                     composition_value = composition_dataset[()]
                     grid_each_composition.append(composition_value)
                 grid_all_composition.append(grid_each_composition)
         grid_used_compositions=[]
         for i in range(len(grid_all_composition)):
-            comp_1=grid_all_composition[i][2]
-            comp_2=grid_all_composition[i][4]
-            comp_3=grid_all_composition[i][5]
+            comp_1=grid_all_composition[i][1]
+            comp_2=grid_all_composition[i][2]
+            comp_3=grid_all_composition[i][4]
             grid_used_compositions=grid_used_compositions + [[comp_1,comp_2,comp_3]]
 
 

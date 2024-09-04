@@ -68,7 +68,7 @@ print('after address')
 test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpMix_{4*j}',f'psd/pumpMix_{4*j+1}',f'orchestrator/modify_{3*j+1}',f'camera/takeImage_{j}', f'psd/pumpVial_{j}', f'psd/pumpMix_{4*j+2}',f'psd/pumpMix_{4*j+3}', f'image/extractColorFromRoi_{j}',f'orchestrator/modify_{3*j+2}',f'pyfrad/dataAnalysis_{j}', f'image/prepareData_{j}'], 
                 params={f'pyfrad_{j}':{'address':json.dumps(addresses)},
                 f'modify_{3*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{4*j}/V2',f'pumpMix_{4*j}/V3',f'pumpMix_{4*j}/V5']},
-                f'pumpMix_{4*j}': dict(V1 = 0, V2 = '?', V3 = '?', V4 = 0, V5 = '?', V6 = 0, speed = 20, mix = 1, times= 1, cell = False),
+                f'pumpMix_{4*j}': dict(V1 = 0, V2 = '?', V3 = '?', V4 = 0, V5 = '?', V6 = 0, speed = 30, mix = 1, times= 1, cell = False),
                 f'pumpMix_{4*j+1}': dict(V1 = 1000, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 13, mix = 3, times= 1, cell = False),
                 f'modify_{3*j+1}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'takeImage_{j}/composition_1_qua',f'takeImage_{j}/composition_2_qua',f'takeImage_{j}/composition_3_qua']},
                 f'takeImage_{j}':dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_bosstest",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
@@ -98,7 +98,7 @@ test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpM
 #                                             'f1score_address':f'experiment_{j}:0/dataAnalysis_{j}/data/f1_score_list',
 #                                             'response_address':f'experiment_{j}:0/extractColorFromRoi_{j}/data/average_color'}}, meta=dict()))
 
-n = 12
+n = 15
 for i in range(j,j+n):
     j = i+1
     addresses = [f'experiment_{l}:0/prepareData_{l}/data' for l in range(1, j)]
@@ -106,7 +106,7 @@ for i in range(j,j+n):
     test_fnc(dict(soe=[f'pyfrad/pyfrad_{j}',f'orchestrator/modify_{3*j}',f'psd/pumpMix_{4*j}',f'psd/pumpMix_{4*j+1}',f'orchestrator/modify_{3*j+1}',f'camera/takeImage_{j}',f'psd/pumpVial_{j}', f'psd/pumpMix_{4*j+2}', f'psd/pumpMix_{4*j+3}', f'image/extractColorFromRoi_{j}', f'orchestrator/modify_{3*j+2}', f'pyfrad/dataAnalysis_{j}', f'image/prepareData_{j}'], 
                 params={f'pyfrad_{j}':{'address':json.dumps(addresses)},
                         f'modify_{3*j}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'pumpMix_{4*j}/V2',f'pumpMix_{4*j}/V3',f'pumpMix_{4*j}/V5']},
-                        f'pumpMix_{4*j}': dict(V1 = 0, V2 = '?', V3 = '?', V4 = 0, V5 = '?', V6 = 0, speed = 20, mix = 1, times= 1, cell = False),
+                        f'pumpMix_{4*j}': dict(V1 = 0, V2 = '?', V3 = '?', V4 = 0, V5 = '?', V6 = 0, speed = 30, mix = 1, times= 1, cell = False),
                         f'pumpMix_{4*j+1}': dict(V1 = 1000, V2 = 0, V3 = 0, V4 = 0, V5 = 0, V6 = 0, speed = 13, mix = 3, times= 1, cell = False),
                         f'modify_{3*j+1}':{'addresses':[f'experiment_{j}:0/pyfrad_{j}/data/next_x',f'experiment_{j}:0/pyfrad_{j}/data/next_y',f'experiment_{j}:0/pyfrad_{j}/data/next_z'],'pointers':[f'takeImage_{j}/composition_1_qua',f'takeImage_{j}/composition_2_qua',f'takeImage_{j}/composition_3_qua']},
                         f'takeImage_{j}':dict(composition_1 = "blue", composition_2 = "yellow", composition_3 = "water_pyfrad",composition_1_qua = '?', composition_2_qua = '?', composition_3_qua = '?'),
